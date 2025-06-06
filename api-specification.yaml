@@ -1,0 +1,566 @@
+openapi: 3.0.0
+info:
+  title: RB-1 API
+  description: LGBTQ+ 청소년 지원 플랫폼 API
+  version: 1.0.0
+  contact:
+    name: RB-1 Support
+    email: support@rb1.kr
+
+servers:
+  - url: https://api.rb1.kr/v1
+    description: Production server
+  - url: http://localhost:4000/v1
+    description: Development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        role:
+          type: string
+          enum: [user, counselor, admin]
+        createdAt:
+          type: string
+          format: date-time
+
+    Post:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
+        author:
+          $ref: '#/components/schemas/User'
+        views:
+          type: integer
+        isOfficial:
+          type: boolean
+        isCounselor:
+          type: boolean
+        relatedLinks:
+          type: array
+          items:
+            type: object
+        createdAt:
+          type: string
+          format: date-time
+
+    Counselor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        specialty:
+          type: string
+        imageUrl:
+          type: string
+        isAvailable:
+          type: boolean
+        bio:
+          type: string
+
+    CounselingRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        age:
+          type: integer
+        contactMethod:
+          type: string
+        preferredDate:
+          type: string
+          format: date
+        preferredTime:
+          type: string
+          format: time
+        concern:
+          type: string
+        urgency:
+          type: string
+          enum: [low, medium, high]
+        status:
+          type: string
+          enum: [pending, confirmed, completed, cancelled]
+
+    DictionaryTerm:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        titleEn:
+          type: string
+        description:
+          type: string
+        example:
+          type: string
+        category:
+          type: string
+        isFeatured:
+          type: boolean
+        imageUrl:
+          type: string
+        relatedTerms:
+          type: array
+          items:
+            type: string
+
+    Game:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        difficulty:
+          type: string
+          enum: [easy, medium, hard]
+        estimatedTime:
+          type: integer
+        category:
+          type: string
+        isNew:
+          type: boolean
+        isPopular:
+          type: boolean
+
+    UserProfile:
+      type: object
+      properties:
+        userId:
+          type: string
+          format: uuid
+        nickname:
+          type: string
+        experience:
+          type: integer
+        level:
+          type: integer
+        points:
+          type: integer
+        avatarData:
+          type: object
+        gardenData:
+          type: object
+
+paths:
+  /auth/register:
+    post:
+      summary: 회원가입
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, username]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+                username:
+                  type: string
+                  minLength: 3
+      responses:
+        '201':
+          description: 회원가입 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                      token:
+                        type: string
+        '400':
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/login:
+    post:
+      summary: 로그인
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: 로그인 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                      token:
+                        type: string
+
+  /posts:
+    get:
+      summary: 게시글 목록 조회
+      tags: [Board]
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Post'
+                      pagination:
+                        type: object
+                        properties:
+                          page:
+                            type: integer
+                          limit:
+                            type: integer
+                          total:
+                            type: integer
+                          totalPages:
+                            type: integer
+
+    post:
+      summary: 게시글 작성
+      tags: [Board]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, content, category]
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                category:
+                  type: string
+                relatedLinks:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '201':
+          description: 게시글 작성 성공
+
+  /posts/{id}:
+    get:
+      summary: 게시글 상세 조회
+      tags: [Board]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Post'
+
+  /counselors:
+    get:
+      summary: 상담사 목록 조회
+      tags: [Counseling]
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Counselor'
+
+  /counseling/requests:
+    post:
+      summary: 상담 신청
+      tags: [Counseling]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, concern]
+              properties:
+                counselorId:
+                  type: string
+                  format: uuid
+                name:
+                  type: string
+                age:
+                  type: integer
+                contactMethod:
+                  type: string
+                preferredDate:
+                  type: string
+                  format: date
+                preferredTime:
+                  type: string
+                  format: time
+                concern:
+                  type: string
+                urgency:
+                  type: string
+                  enum: [low, medium, high]
+      responses:
+        '201':
+          description: 상담 신청 성공
+
+  /dictionary/terms:
+    get:
+      summary: 용어 목록 조회
+      tags: [Dictionary]
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DictionaryTerm'
+
+  /games:
+    get:
+      summary: 게임 목록 조회
+      tags: [Games]
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Game'
+
+  /games/{id}/sessions:
+    post:
+      summary: 게임 세션 시작
+      tags: [Games]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: 게임 세션 생성 성공
+
+  /users/{id}/profile:
+    get:
+      summary: 사용자 프로필 조회
+      tags: [User]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/UserProfile'
+
+  /quiz/questions:
+    get:
+      summary: 퀴즈 질문 조회
+      tags: [Quiz]
+      responses:
+        '200':
+          description: 성공
+
+  /quiz/submit:
+    post:
+      summary: 퀴즈 제출
+      tags: [Quiz]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                answers:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '200':
+          description: 퀴즈 결과
+
+tags:
+  - name: Authentication
+    description: 인증 관련 API
+  - name: Board
+    description: 게시판 관련 API
+  - name: Counseling
+    description: 상담 관련 API
+  - name: Dictionary
+    description: 용어사전 관련 API
+  - name: Games
+    description: 게임 관련 API
+  - name: User
+    description: 사용자 관련 API
+  - name: Quiz
+    description: 퀴즈 관련 API
