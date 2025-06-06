@@ -25,3 +25,29 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# OpenNext
+.open-next/
+
+# Cloudflare
+.wrangler/
+wrangler-logs/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.log
+.cache/
