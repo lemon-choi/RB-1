@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "gh-pages -d out"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
@@ -63,6 +64,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "gh-pages": "^6",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
