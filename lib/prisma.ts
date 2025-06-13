@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-// 환경 변수가 로드되지 않는 경우를 대비한 직접 설정
+// PostgreSQL 데이터베이스 사용
 const DATABASE_URL = "postgresql://postgres:1234@localhost:5432/rainbow_buddy";
 
 // PrismaClient는 전역 싱글톤으로 사용 (중복 인스턴스 방지)

@@ -15,7 +15,7 @@ model User {
   email         String    @unique
   passwordHash  String    @map("password_hash")
   username      String    @unique
-  role          Role      @default(user)
+  role          String    @default("user") @map("role") // 문자열로 변경
   createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
   deletedAt     DateTime? @map("deleted_at") @db.Timestamp(6)
@@ -107,8 +107,8 @@ model CounselingRequest {
   preferredDate   DateTime? @map("preferred_date") @db.Date
   preferredTime   DateTime? @map("preferred_time") @db.Time(6)
   concern         String
-  urgency         Urgency   @default(medium)
-  status          RequestStatus @default(pending)
+  urgency         String    @default("medium") @map("urgency") // 문자열로 변경
+  status          String    @default("pending") @map("status") // 문자열로 변경
   createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
   
@@ -150,7 +150,7 @@ model Game {
   title           String
   description     String?
   imageUrl        String?   @map("image_url")
-  difficulty      Difficulty?
+  difficulty      String?   @default("medium") @map("difficulty") // 문자열로 변경
   estimatedTime   Int?      @map("estimated_time")
   category        String?
   isNew           Boolean   @default(false) @map("is_new")
@@ -255,7 +255,7 @@ model ShopItem {
   id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name            String
   description     String?
-  itemType        ItemType  @map("item_type")
+  itemType        String    @map("item_type") // 문자열로 변경
   price           Int       @default(0)
   imageUrl        String?   @map("image_url")
   data            Json      @default("{}")
@@ -305,34 +305,37 @@ model ActivityLog {
   @@map("activity_logs")
 }
 
-enum Role {
-  user
-  counselor
-  admin
-}
+// 열거형(enum)을 문자열(String)로 변경했으므로 이 정의들은 더 이상 필요하지 않습니다
+// 참고용으로 주석 처리
 
-enum Urgency {
-  low
-  medium
-  high
-}
+// enum Role {
+//   user
+//   counselor
+//   admin
+// }
 
-enum RequestStatus {
-  pending
-  confirmed
-  completed
-  cancelled
-}
+// enum Urgency {
+//   low
+//   medium
+//   high
+// }
 
-enum Difficulty {
-  easy
-  medium
-  hard
-}
+// enum RequestStatus {
+//   pending
+//   confirmed
+//   completed
+//   cancelled
+// }
 
-enum ItemType {
-  avatar
-  accessory
-  background
-  theme
-}
+// enum Difficulty {
+//   easy
+//   medium
+//   hard
+// }
+
+// enum ItemType {
+//   avatar
+//   accessory
+//   background
+//   theme
+// }

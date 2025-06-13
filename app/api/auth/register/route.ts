@@ -57,15 +57,13 @@ export async function POST(request: NextRequest) {
     // 비밀번호 해싱
     const passwordHash = await hashPassword(password);
 
-    // 사용자 생성
+    // 사용자 생성 (계단식 생성 대신 분리된 쿼리로 변경)
     const newUser = await prisma.user.create({
       data: {
         email,
         passwordHash,
         username,
-        profile: {
-          create: {} // 기본 프로필 생성
-        }
+        role: "user"  // 명시적으로 문자열 지정
       },
       select: {
         id: true,
@@ -73,6 +71,18 @@ export async function POST(request: NextRequest) {
         username: true,
         role: true,
         createdAt: true
+      }
+    });
+
+    // 프로필 별도 생성
+    await prisma.userProfile.create({
+      data: {
+        userId: newUser.id,
+        experience: 0,
+        level: 1,
+        points: 0,
+        avatarData: JSON.stringify({}),
+        gardenData: JSON.stringify({})
       }
     });
 
