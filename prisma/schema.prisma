@@ -1,0 +1,338 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  username      String    @unique
+  role          Role      @default(user)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt     DateTime? @map("deleted_at") @db.Timestamp(6)
+  
+  profile       UserProfile?
+  posts         Post[]
+  gameSessions  GameSession[]
+  quizSessions  UserQuizSession[]
+  quests        UserQuest[]
+  inventory     UserInventory[]
+  activityLogs  ActivityLog[]
+
+  @@map("users")
+}
+
+model UserProfile {
+  userId        String    @id @map("user_id") @db.Uuid
+  nickname      String?
+  age           Int?
+  gender        String?
+  pronouns      String?
+  bio           String?
+  experience    Int       @default(0)
+  level         Int       @default(1)
+  points        Int       @default(0)
+  avatarData    Json      @default("{}") @map("avatar_data")
+  gardenData    Json      @default("{}") @map("garden_data")
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model BoardCategory {
+  id            Int       @id @default(autoincrement())
+  name          String
+  description   String?
+  sortOrder     Int       @default(0) @map("sort_order")
+  
+  posts         Post[]
+
+  @@map("board_categories")
+}
+
+model Post {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title         String
+  content       String
+  categoryId    Int?      @map("category_id")
+  authorId      String?   @map("author_id") @db.Uuid
+  views         Int       @default(0)
+  isOfficial    Boolean   @default(false) @map("is_official")
+  isCounselor   Boolean   @default(false) @map("is_counselor")
+  relatedLinks  Json      @default("[]") @map("related_links")
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt     DateTime? @map("deleted_at") @db.Timestamp(6)
+  
+  category      BoardCategory? @relation(fields: [categoryId], references: [id])
+  author        User?         @relation(fields: [authorId], references: [id])
+
+  @@map("posts")
+}
+
+model Counselor {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String    @unique @map("user_id") @db.Uuid
+  name            String
+  specialty       String?
+  imageUrl        String?   @map("image_url")
+  isAvailable     Boolean   @default(true) @map("is_available")
+  bio             String?
+  certifications  Json      @default("[]")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  
+  counselingRequests CounselingRequest[]
+
+  @@map("counselors")
+}
+
+model CounselingRequest {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String?   @map("user_id") @db.Uuid
+  counselorId     String?   @map("counselor_id") @db.Uuid
+  name            String?
+  age             Int?
+  contactMethod   String?   @map("contact_method")
+  preferredDate   DateTime? @map("preferred_date") @db.Date
+  preferredTime   DateTime? @map("preferred_time") @db.Time(6)
+  concern         String
+  urgency         Urgency   @default(medium)
+  status          RequestStatus @default(pending)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  
+  counselor       Counselor? @relation(fields: [counselorId], references: [id])
+
+  @@map("counseling_requests")
+}
+
+model DictionaryCategory {
+  id              Int       @id @default(autoincrement())
+  name            String
+  color           String?
+  
+  terms           DictionaryTerm[]
+
+  @@map("dictionary_categories")
+}
+
+model DictionaryTerm {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String
+  titleEn         String?   @map("title_en")
+  description     String
+  example         String?
+  categoryId      Int?      @map("category_id")
+  isFeatured      Boolean   @default(false) @map("is_featured")
+  imageUrl        String?   @map("image_url")
+  relatedTerms    String[]  @default([]) @map("related_terms") @db.Uuid
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  
+  category        DictionaryCategory? @relation(fields: [categoryId], references: [id])
+
+  @@map("dictionary_terms")
+}
+
+model Game {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String
+  description     String?
+  imageUrl        String?   @map("image_url")
+  difficulty      Difficulty?
+  estimatedTime   Int?      @map("estimated_time")
+  category        String?
+  isNew           Boolean   @default(false) @map("is_new")
+  isPopular       Boolean   @default(false) @map("is_popular")
+  hasVideo        Boolean   @default(false) @map("has_video")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  
+  sessions        GameSession[]
+
+  @@map("games")
+}
+
+model GameSession {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  gameId          String    @map("game_id") @db.Uuid
+  score           Int       @default(0)
+  progress        Json      @default("{}")
+  startedAt       DateTime  @default(now()) @map("started_at") @db.Timestamp(6)
+  completedAt     DateTime? @map("completed_at") @db.Timestamp(6)
+  
+  user            User      @relation(fields: [userId], references: [id])
+  game            Game      @relation(fields: [gameId], references: [id])
+
+  @@map("game_sessions")
+}
+
+model IdentityCard {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String
+  description     String?
+  imageUrl        String?   @map("image_url")
+  category        String?
+
+  @@map("identity_cards")
+}
+
+model QuizQuestion {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  text            String
+  options         Json
+  orderIndex      Int?      @map("order_index")
+
+  @@map("quiz_questions")
+}
+
+model QuizResult {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String
+  description     String?
+  imageUrl        String?   @map("image_url")
+  details         Json?
+  resources       Json      @default("[]")
+  
+  userQuizSessions UserQuizSession[]
+
+  @@map("quiz_results")
+}
+
+model UserQuizSession {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String?   @map("user_id") @db.Uuid
+  answers         Json
+  resultId        String?   @map("result_id") @db.Uuid
+  completedAt     DateTime  @default(now()) @map("completed_at") @db.Timestamp(6)
+  
+  user            User?     @relation(fields: [userId], references: [id])
+  result          QuizResult? @relation(fields: [resultId], references: [id])
+
+  @@map("user_quiz_sessions")
+}
+
+model DailyQuest {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String
+  description     String?
+  points          Int       @default(0)
+  questType       String?   @map("quest_type")
+  requirements    Json      @default("{}")
+  
+  userQuests      UserQuest[]
+
+  @@map("daily_quests")
+}
+
+model UserQuest {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  questId         String    @map("quest_id") @db.Uuid
+  completed       Boolean   @default(false)
+  completedAt     DateTime? @map("completed_at") @db.Timestamp(6)
+  date            DateTime  @default(now()) @map("date") @db.Date
+  
+  user            User      @relation(fields: [userId], references: [id])
+  quest           DailyQuest @relation(fields: [questId], references: [id])
+
+  @@unique([userId, questId, date])
+  @@map("user_quests")
+}
+
+model ShopItem {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String
+  description     String?
+  itemType        ItemType  @map("item_type")
+  price           Int       @default(0)
+  imageUrl        String?   @map("image_url")
+  data            Json      @default("{}")
+  isAvailable     Boolean   @default(true) @map("is_available")
+  
+  userInventory   UserInventory[]
+
+  @@map("shop_items")
+}
+
+model UserInventory {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  itemId          String    @map("item_id") @db.Uuid
+  purchasedAt     DateTime  @default(now()) @map("purchased_at") @db.Timestamp(6)
+  
+  user            User      @relation(fields: [userId], references: [id])
+  item            ShopItem  @relation(fields: [itemId], references: [id])
+
+  @@unique([userId, itemId])
+  @@map("user_inventory")
+}
+
+model ExternalResource {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type            String
+  title           String
+  description     String?
+  url             String?
+  contactInfo     Json      @default("{}") @map("contact_info")
+  isActive        Boolean   @default(true) @map("is_active")
+
+  @@map("external_resources")
+}
+
+model ActivityLog {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  action          String
+  resourceType    String?   @map("resource_type")
+  resourceId      String?   @map("resource_id") @db.Uuid
+  metadata        Json      @default("{}")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  
+  user            User      @relation(fields: [userId], references: [id])
+
+  @@map("activity_logs")
+}
+
+enum Role {
+  user
+  counselor
+  admin
+}
+
+enum Urgency {
+  low
+  medium
+  high
+}
+
+enum RequestStatus {
+  pending
+  confirmed
+  completed
+  cancelled
+}
+
+enum Difficulty {
+  easy
+  medium
+  hard
+}
+
+enum ItemType {
+  avatar
+  accessory
+  background
+  theme
+}
