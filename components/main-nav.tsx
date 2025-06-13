@@ -4,12 +4,20 @@ import Link from "next/link"
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, X } from "lucide-react"
+import { Menu, X, User } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 export function MainNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  // 로그인 상태 확인
+  useEffect(() => {
+    // 로컬 스토리지에서 토큰 확인
+    const token = localStorage.getItem('token')
+    setIsLoggedIn(!!token)
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,6 +62,27 @@ export function MainNav() {
             >
               <Link href="/lever">🎯 레버당기기</Link>
             </Button>
+            {isLoggedIn ? (
+              <Button
+                className="rounded-[10px] bg-[#A091E6] hover:bg-[#8A7DD1] text-white shadow-sm transition-all duration-300"
+                asChild
+              >
+                <Link href="/profile">
+                  <User className="h-4 w-4 mr-2" />
+                  프로필
+                </Link>
+              </Button>
+            ) : (
+              <Button
+                className="rounded-[10px] bg-[#A091E6] hover:bg-[#8A7DD1] text-white shadow-sm transition-all duration-300"
+                asChild
+              >
+                <Link href="/login">
+                  <User className="h-4 w-4 mr-2" />
+                  로그인
+                </Link>
+              </Button>
+            )}
           </nav>
 
           <div className="md:hidden">
@@ -90,6 +119,21 @@ export function MainNav() {
               <Button className="w-full rounded-[10px] bg-[#39393D] hover:bg-[#39393D]/90 text-white shadow-sm" asChild>
                 <Link href="/lever">🎯 레버당기기</Link>
               </Button>
+              {isLoggedIn ? (
+                <Button className="w-full rounded-[10px] bg-[#A091E6] hover:bg-[#8A7DD1] text-white shadow-sm" asChild>
+                  <Link href="/profile" className="flex items-center justify-center">
+                    <User className="h-4 w-4 mr-2" />
+                    프로필
+                  </Link>
+                </Button>
+              ) : (
+                <Button className="w-full rounded-[10px] bg-[#A091E6] hover:bg-[#8A7DD1] text-white shadow-sm" asChild>
+                  <Link href="/login" className="flex items-center justify-center">
+                    <User className="h-4 w-4 mr-2" />
+                    로그인
+                  </Link>
+                </Button>
+              )}
             </div>
           </motion.div>
         )}

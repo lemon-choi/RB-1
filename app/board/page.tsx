@@ -8,7 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ArrowLeft, Search, AlertCircle } from "lucide-react"
+import { ArrowLeft, Search, AlertCircle, PenSquare } from "lucide-react"
 import { MainNav } from "@/components/main-nav"
 import { RainbowText } from "@/components/rainbow-text"
 
@@ -138,6 +138,12 @@ export default function BoardPage() {
               <Button variant="ghost" className="flex items-center text-gray-600">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 홈으로 돌아가기
+              </Button>
+            </Link>
+            <Link href="/board/create">
+              <Button className="flex items-center bg-[#A091E6] hover:bg-[#8A7DD1] text-white rounded-full">
+                <PenSquare className="mr-2 h-4 w-4" />
+                게시글 작성
               </Button>
             </Link>
           </div>
