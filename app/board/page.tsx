@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -25,7 +25,35 @@ interface Post {
   isCounselor?: boolean
 }
 
+interface User {
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+}
+
 export default function BoardPage() {
+  // 사용자 정보 상태
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isCounselor, setIsCounselor] = useState(false);
+
+  // 사용자 정보 로드
+  useEffect(() => {
+    // 로컬 스토리지에서 사용자 정보 가져오기
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        setIsAdmin(parsedUser.role === 'admin');
+        setIsCounselor(parsedUser.role === 'counselor');
+      } catch (error) {
+        console.error("Failed to parse user data:", error);
+      }
+    }
+  }, []);
+
   // 샘플 게시글 데이터
   const posts: Post[] = [
     {
@@ -140,12 +168,24 @@ export default function BoardPage() {
                 홈으로 돌아가기
               </Button>
             </Link>
-            <Link href="/board/create">
-              <Button className="flex items-center bg-[#A091E6] hover:bg-[#8A7DD1] text-white rounded-full">
-                <PenSquare className="mr-2 h-4 w-4" />
-                게시글 작성
-              </Button>
-            </Link>
+            {/* 관리자 또는 상담사만 게시글 작성 가능 */}
+            {(isAdmin || isCounselor) && (
+              <div className="flex space-x-2">
+                <Link href="/board/create">
+                  <Button className="flex items-center bg-[#A091E6] hover:bg-[#8A7DD1] text-white rounded-full">
+                    <PenSquare className="mr-2 h-4 w-4" />
+                    게시글 작성
+                  </Button>
+                </Link>
+                {isAdmin && (
+                  <Link href="/board/manage">
+                    <Button className="flex items-center bg-[#F3B391] hover:bg-[#F09E78] text-white rounded-full">
+                      관리자 페이지
+                    </Button>
+                  </Link>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="text-center mb-10">
@@ -265,8 +305,8 @@ export default function BoardPage() {
                 정보와 자료를 제공하는 공간입니다. 모든 게시글은 관리자와 전문가에 의해 작성되었습니다.
               </p>
               <p>
-                <span className="font-medium">상호작용 불가:</span> 현재 게시판은 정보 제공 목적으로만 운영되며,
-                댓글이나 게시글 작성 기능은 제공되지 않습니다. 질문이나 상담이 필요하시면 1:1 상담을 이용해주세요.
+                <span className="font-medium">전문가 작성:</span> 현재 게시판은 전문가와 관리자에 의해 관리되며,
+                모든 게시글은 검증된 정보를 제공합니다. 질문이나 상담이 필요하시면 1:1 상담을 이용해주세요.
               </p>
               <p>
                 <span className="font-medium">전문가 자료:</span> 게시판의 많은 자료는 전문 상담사와 교육자들에 의해
