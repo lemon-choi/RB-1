@@ -4,8 +4,15 @@ import { hashPassword, signJwtToken } from '@/lib/auth';
 
 export async function GET() {
   const results: any = {};
-  
+
   try {
+    // 0. Prisma URL 정보 확인
+    const DATABASE_URL = "postgresql://postgres:1234@localhost:5432/rainbow_buddy";
+    results.prismaConfig = {
+      directUrl: DATABASE_URL,
+      clientConfig: (prisma as any)._engineConfig?.datasources?.db?.url || 'URL not available'
+    };
+
     // 1. 데이터베이스 연결 테스트
     results.dbConnection = { success: false, error: null };
     try {
