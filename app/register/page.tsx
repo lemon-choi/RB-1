@@ -168,6 +168,9 @@ export default function RegisterPage() {
                     로그인
                   </Link>
                 </div>
+                <div className="pt-2 border-t border-gray-100 mt-2 text-xs text-gray-500 text-center">
+                  관리자 계정은 <Link href="/login/admin" className="text-gray-600 hover:underline">관리자 로그인 페이지</Link>에서 생성할 수 있습니다.
+                </div>
               </CardFooter>
             </Card>
 
