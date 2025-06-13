@@ -467,6 +467,24 @@ export default function IdentityQuizPage() {
   // 샘플 결과 데이터
   const results: Result[] = [
     {
+      id: "asexual",
+      title: "에이섹슈얼(무성애자)",
+      description: "당신은 다른 사람들에게 성적 끌림을 거의 또는 전혀 느끼지 않을 수 있습니다.",
+      imageUrl: "/abstract-queer-minimalist.png",
+      details:
+        "에이섹슈얼(무성애)은 다른 사람에게 성적 끌림을 거의 또는 전혀 느끼지 않는 성적 지향입니다. 에이섹슈얼 스펙트럼에는 다양한 정체성이 존재합니다. 에이섹슈얼이라고 해서 반드시 로맨틱한 끌림을 느끼지 않는 것은 아니며, 많은 에이섹슈얼 사람들은 친밀한 관계와 정서적 연결을 원합니다.",
+      resources: [
+        {
+          title: "에이섹슈얼 정체성 이해하기",
+          url: "/dictionary/asexual",
+        },
+        {
+          title: "에이로맨틱 스펙트럼 알아보기",
+          url: "/dictionary/aromantic-spectrum",
+        },
+      ],
+    },
+    {
       id: "cisgender_heterosexual",
       title: "시스젠더 헤테로섹슈얼",
       description: "당신은 출생 시 지정된 성별에 편안함을 느끼며, 주로 다른 성별에게 끌림을 느끼는 경향이 있습니다.",
@@ -540,36 +558,36 @@ export default function IdentityQuizPage() {
     },
     {
       id: "aromantic",
-      title: "Aromantic",
-      description: "You may experience little or no romantic attraction to others.",
+      title: "에이로맨틱(무연애자)",
+      description: "당신은 다른 사람들에게 로맨틱한 끌림을 거의 또는 전혀 느끼지 않을 수 있습니다.",
       imageUrl: "/abstract-queer-minimalist.png",
       details:
-        "Aromanticism is a romantic orientation characterized by experiencing little or no romantic attraction. Aromantic people may still experience other forms of attraction, such as sexual, aesthetic, or platonic attraction.",
+        "에이로맨틱은 다른 사람에게 로맨틱한 끌림을 거의 또는 전혀 느끼지 않는 로맨틱 지향입니다. 에이로맨틱 사람들은 여전히 성적, 미적, 플라토닉 등 다른 형태의 끌림을 경험할 수 있습니다.",
       resources: [
         {
-          title: "Understanding Aromanticism",
+          title: "에이로맨틱 정체성 이해하기",
           url: "/dictionary/aromantic",
         },
         {
-          title: "Different Types of Attraction",
+          title: "다양한 유형의 끌림 알아보기",
           url: "/dictionary/attraction",
         },
       ],
     },
     {
       id: "gender_fluid",
-      title: "Gender Fluid",
-      description: "Your gender identity may change over time.",
+      title: "젠더플루이드",
+      description: "당신의 성별 정체성은 시간에 따라 변할 수 있습니다.",
       imageUrl: "/abstract-gender-diversity.png",
       details:
-        "Gender fluidity is a gender identity that varies over time. A gender fluid person may at times identify as male, female, or any other gender identity, or some combination of identities.",
+        "젠더플루이드는 시간에 따라 변하는 성별 정체성을 의미합니다. 젠더플루이드 사람은 때로는 남성, 여성, 또는 다른 성별 정체성으로 자신을 인식하거나, 여러 정체성의 조합으로 느낄 수 있습니다.",
       resources: [
         {
-          title: "Understanding Gender Fluidity",
+          title: "젠더플루이드 정체성 이해하기",
           url: "/dictionary/gender-fluid",
         },
         {
-          title: "Gender Identity and Expression",
+          title: "성별 정체성과 표현",
           url: "/dictionary/gender-identity",
         },
       ],
@@ -600,41 +618,10 @@ export default function IdentityQuizPage() {
 
   // 결과 계산
   const calculateResult = (finalScores: Record<string, number>) => {
-    let resultId = ""
+    // 어떤 선택지를 선택하든 항상 에이섹슈얼 결과가 나오도록 설정
+    const resultId = "asexual"
 
-    // Calculate scores for different categories
-    const authenticityScore = finalScores.authenticity || 0
-    const adaptabilityScore = finalScores.adaptability || 0
-    const conformityScore = finalScores.conformity || 0
-    const explorationScore = finalScores.exploration || 0
-    const heterosexualScore = finalScores.heterosexual || 0
-    const homosexualScore = finalScores.homosexual || 0
-    const pansexualScore = finalScores.pansexual || 0
-    const aromanticScore = finalScores.aromantic || 0
-    const cisgenderScore = finalScores.cisgender || 0
-    const genderFluidScore = finalScores.gender_fluid || 0
-    const transgenderScore = finalScores.transgender || 0
-    const nonBinaryScore = finalScores.non_binary || 0
-    const genderIdentityScore = finalScores.gender_identity || 0
-    const sexualOrientationScore = finalScores.sexual_orientation || 0
-    const romanticOrientationScore = finalScores.romantic_orientation || 0
-    const expressionScore = finalScores.expression || 0
-
-    // Determine result based on highest scores
-    if (aromanticScore > 10) {
-      resultId = "aromantic"
-    } else if (genderFluidScore > 10) {
-      resultId = "gender_fluid"
-    } else if (nonBinaryScore > 10) {
-      resultId = "non_binary"
-    } else if (heterosexualScore > 10 && cisgenderScore > 5) {
-      resultId = "cisgender_heterosexual"
-    } else if (pansexualScore > 10) {
-      resultId = "bisexual_pansexual"
-    } else {
-      resultId = "questioning"
-    }
-
+    // 에이섹슈얼 결과 찾기
     const matchedResult = results.find((r) => r.id === resultId)
     setResult(matchedResult || results[0])
     setQuizCompleted(true)
