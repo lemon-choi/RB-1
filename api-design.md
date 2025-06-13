@@ -195,7 +195,7 @@ POST   /resources/track-click      # 클릭 추적
 ```env
 NODE_ENV=development
 PORT=4000
-DATABASE_URL=postgresql://user:pass@localhost:5432/rb1
+DATABASE_URL=postgresql://postgres:1234@localhost:5432/rb1
 REDIS_URL=redis://localhost:6379
 JWT_SECRET=your-secret-key
 JWT_EXPIRES_IN=7d
