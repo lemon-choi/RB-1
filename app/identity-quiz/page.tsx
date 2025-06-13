@@ -756,17 +756,67 @@ export default function IdentityQuizPage() {
                 </CardFooter>
               </Card>
 
-              <div className="mt-8 bg-white rounded-3xl shadow-sm p-8 text-center">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">중요 안내</h2>
-                <p className="text-gray-600 mb-4">
-                  이 퀴즈 결과는 참고용일 뿐이며, 여러분의 정체성을 정의하지 않습니다. 자신의 정체성을 탐색하는 것은
-                  개인적인 여정이며, 시간이 걸릴 수 있습니다.
-                </p>
-                <p className="text-gray-600">더 깊은 대화나 지원이 필요하시면, 전문 상담사와의 상담을 고려해보세요.</p>
-                <div className="mt-6">
-                  <Button className="rounded-full bg-[#39393D] hover:bg-[#39393D]/90 text-white" asChild>
-                    <Link href="/lever">🎯 레버당기기</Link>
-                  </Button>
+              <div className="mt-8 bg-white rounded-3xl shadow-sm p-8">
+                <h2 className="text-xl font-bold text-gray-900 mb-4 text-center">중요 안내</h2>
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold mb-4 text-center">관련 컨텐츠</h3>
+                  <div className="flex flex-col md:flex-row gap-6">
+                    <div className="flex-1">
+                      <div className="relative h-48 w-full rounded-xl overflow-hidden mb-4">
+                        <Image
+                          src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxEQEBUREBAVFhUVFxUVFRYVFhUVFhUVFhcZFhYWFhUYHSggGBolHRUVITIhJikrLy4vFx8zODMsNygtLisBCgoKDg0OGxAQGislHyUtLy0tKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAPsAyQMBEQACEQEDEQH/xAAcAAABBQEBAQAAAAAAAAAAAAAAAQMEBQYCBwj/xABJEAABAwIDBAcDCAUMAQUAAAABAAIRAyEEEjEFIkFRBhNhcYGRoQcy8RRCUnKSscHwF1OCk+EVIyQzQ2Jjc6Ky0vHCJTV0g7P/xAAaAQEAAgMBAAAAAAAAAAAAAAAAAQQCAwUG/8QAOREAAgEDAwIEBQMDAwIHAAAAAAECAwQREiExQVEFE2FxFCIygZEzofCxweEkQtEGYgYVNFJywvH/2gAMAwEAAhEDEQA/APRVbOMKgBACAEAIAQAgBAEIAUAEAIAQAgFQHm3TLo/VxVW1RxA7Z84WStTcEtnuXKFaMv8A60X9fo7WpzIIGhVCpbzhuaZXEW8IrKGGrFxGcRzJVVQqZZecopdBiujdWoTlqBtphpBPqtqoTXRmn4mJZYWkWgCbq1BYRpnLLHVkahEAIAQAgBACAEAIAQAgBAf/2Q=="
+                          alt="하트스토퍼"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <h3 className="text-lg font-semibold mb-2">하트스토퍼 (Heartstopper)</h3>
+                      <p className="text-gray-600 text-sm mb-3">
+                        성 소수자 청소년들의 사랑과 우정, 성장을 다룬 넷플릭스 오리지널 시리즈입니다.
+                        앨리스 오스먼의 동명 그래픽 노블을 원작으로 하며, 다양한 성 정체성과 성적 지향을 가진
+                        캐릭터들의 이야기를 섬세하게 그려냅니다.
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-medium">시청 가능:</span>
+                        <a href="https://www.netflix.com/title/81059939" target="_blank" rel="noopener noreferrer" className="text-[#E50914] hover:underline flex items-center">
+                          넷플릭스
+                        </a>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold mb-2">주요 정보</h3>
+                      <ul className="space-y-2 text-sm text-gray-600">
+                        <li><span className="font-medium">장르:</span> 청소년 드라마, 로맨스, LGBTQ+</li>
+                        <li><span className="font-medium">시즌:</span> 시즌 1 (2022), 시즌 2 (2023), 시즌 3 (2024)</li>
+                        <li><span className="font-medium">에피소드:</span> 시즌당 8편</li>
+                        <li><span className="font-medium">주요 출연:</span> 키트 코너, 조 로크, 야스민 피네이</li>
+                        <li><span className="font-medium">특징:</span>
+                          다양한 성 정체성(게이, 레즈비언, 트랜스젠더, 바이섹슈얼, 에이섹슈얼 등)과
+                          다양한 인종적 배경을 가진 캐릭터들이 등장하며, 청소년들의 성 정체성 탐색 과정을
+                          긍정적으로 표현합니다.
+                        </li>
+                        <li><span className="font-medium">수상:</span> 에미상, BAFTA TV 어워드 등 다수</li>
+                      </ul>
+                      <div className="mt-4">
+                        <Link href="/dictionary/representation" className="text-[#7EAED9] hover:underline text-sm">
+                          미디어에서의 퀴어 재현에 대해 더 알아보기 →
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-100 pt-6 text-center">
+                  <p className="text-gray-600 mb-4">
+                    이 퀴즈 결과는 참고용일 뿐이며, 여러분의 정체성을 정의하지 않습니다. 자신의 정체성을 탐색하는 것은
+                    개인적인 여정이며, 시간이 걸릴 수 있습니다.
+                  </p>
+                  <p className="text-gray-600">더 깊은 대화나 지원이 필요하시면, 전문 상담사와의 상담을 고려해보세요.</p>
+                  <div className="mt-6">
+                    <Button className="rounded-full bg-[#39393D] hover:bg-[#39393D]/90 text-white" asChild>
+                      <Link href="/lever">🎯 레버당기기</Link>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
