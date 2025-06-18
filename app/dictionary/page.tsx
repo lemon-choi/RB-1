@@ -146,8 +146,8 @@ export default function DictionaryPage() {
       new RegExp(`\\b${lowerSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(term.title) ||
       new RegExp(`\\b${lowerSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(term.titleEn)
     
-    // 설명에서 부분 매칭 (하지만 가중치를 낮게)
-    const descriptionMatch = term.description.toLowerCase().includes(lowerSearchTerm)
+    // 설명에서도 단어 경계 매칭 적용 (정확한 단어만 매칭)
+    const descriptionMatch = new RegExp(`\\b${lowerSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(term.description)
     
     const matchesSearch = exactTitleMatch || wordBoundaryMatch || descriptionMatch
 
