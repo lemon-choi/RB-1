@@ -148,15 +148,20 @@ export default function BoardPage() {
   const [activeTab, setActiveTab] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
 
-  // 게시글 필터링
-  const filteredPosts = posts.filter((post) => {
-    const matchesSearch =
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchTerm.toLowerCase())
+  // 게시글 필터링 및 정렬
+  const filteredPosts = posts
+    .filter((post) => {
+      const matchesSearch =
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.content.toLowerCase().includes(searchTerm.toLowerCase())
 
-    if (activeTab === "all") return matchesSearch
-    return matchesSearch && post.category === activeTab
-  })
+      if (activeTab === "all") return matchesSearch
+      return matchesSearch && post.category === activeTab
+    })
+    .sort((a, b) => {
+      // 날짜순으로 내림차순 정렬 (최신 게시글이 맨 위)
+      return new Date(b.date).getTime() - new Date(a.date).getTime()
+    })
 
   // 카테고리별 배지 색상
   const categoryColors = {
