@@ -86,6 +86,40 @@ export default function DictionaryPage() {
       imageUrl: "/pride-hearts.png",
       relatedTerms: ["bisexual", "pansexual", "asexual"],
     },
+    {
+      id: "asexual",
+      title: "에이섹슈얼",
+      titleEn: "Asexual",
+      description:
+        "다른 사람에게 성적 끌림을 거의 또는 전혀 느끼지 않는 성적 지향입니다. 에이섹슈얼 스펙트럼에는 다양한 정체성이 존재하며, 에이섹슈얼이라고 해서 반드시 로맨틱한 끌림을 느끼지 않는 것은 아닙니다. 많은 에이섹슈얼 사람들은 친밀한 관계와 정서적 연결을 원합니다.",
+      example: "그는 자신을 에이섹슈얼로 정의하며, 로맨틱한 관계는 원하지만 성적 끌림은 거의 느끼지 않는다고 설명했습니다.",
+      category: "성적 지향",
+      isFeatured: true,
+      imageUrl: "/abstract-queer-minimalist.png",
+      relatedTerms: ["aromantic", "demisexual", "sexual-orientation"],
+    },
+    {
+      id: "aromantic",
+      title: "에이로맨틱",
+      titleEn: "Aromantic",
+      description:
+        "다른 사람에게 로맨틱한 끌림을 거의 또는 전혀 느끼지 않는 로맨틱 지향입니다. 에이로맨틱 사람들은 여전히 성적, 미적, 플라토닉 등 다른 형태의 끌림을 경험할 수 있으며, 깊은 우정이나 가족 같은 관계를 소중히 여길 수 있습니다.",
+      example: "그녀는 에이로맨틱으로서 연인 관계보다는 친구들과의 깊은 우정을 더 중요하게 생각합니다.",
+      category: "성적 지향",
+      imageUrl: "/abstract-queer-minimalist.png",
+      relatedTerms: ["asexual", "platonic", "sexual-orientation"],
+    },
+    {
+      id: "demisexual",
+      title: "데미섹슈얼",
+      titleEn: "Demisexual",
+      description:
+        "깊은 정서적 유대감이 형성된 후에만 성적 끌림을 느끼는 성적 지향입니다. 데미섹슈얼은 에이섹슈얼 스펙트럼의 일부로 여겨지며, 먼저 강한 감정적 연결이 있어야 성적 매력을 느낄 수 있습니다.",
+      example: "그는 데미섹슈얼로서 누군가와 깊은 신뢰 관계를 쌓은 후에야 성적 끌림을 느끼게 됩니다.",
+      category: "성적 지향",
+      imageUrl: "/abstract-queer-minimalist.png",
+      relatedTerms: ["asexual", "sexual-orientation"],
+    },
   ]
 
   const [searchTerm, setSearchTerm] = useState("")
