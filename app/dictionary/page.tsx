@@ -127,10 +127,29 @@ export default function DictionaryPage() {
 
   // 검색 및 필터링 로직
   const filteredTerms = terms.filter((term) => {
-    const matchesSearch =
-      term.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      term.titleEn.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      term.description.toLowerCase().includes(searchTerm.toLowerCase())
+    if (!searchTerm.trim()) {
+      // 검색어가 없으면 모든 항목 표시
+      if (activeTab === "all") return true
+      if (activeTab === "featured") return term.isFeatured
+      return term.category === activeTab
+    }
+
+    const lowerSearchTerm = searchTerm.toLowerCase().trim()
+    
+    // 정확한 제목 매칭을 우선으로 하고, 부분 매칭도 허용
+    const exactTitleMatch = 
+      term.title.toLowerCase() === lowerSearchTerm ||
+      term.titleEn.toLowerCase() === lowerSearchTerm
+    
+    // 제목에서 단어 경계를 고려한 매칭 (정확한 단어 매칭)
+    const wordBoundaryMatch = 
+      new RegExp(`\\b${lowerSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(term.title) ||
+      new RegExp(`\\b${lowerSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(term.titleEn)
+    
+    // 설명에서 부분 매칭 (하지만 가중치를 낮게)
+    const descriptionMatch = term.description.toLowerCase().includes(lowerSearchTerm)
+    
+    const matchesSearch = exactTitleMatch || wordBoundaryMatch || descriptionMatch
 
     if (activeTab === "all") return matchesSearch
     if (activeTab === "featured") return matchesSearch && term.isFeatured
