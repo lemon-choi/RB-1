@@ -89,25 +89,28 @@ export default function CreatePostPage() {
     setIsLoading(true)
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          ...formData,
-          // 관리자가 아닌 경우 isOfficial은 항상 false
-          isOfficial: isAdmin ? formData.isOfficial : false,
-        }),
-      });
+      // 새 게시글 생성
+      const newPost = {
+        id: `post_${Date.now()}`,
+        title: formData.title,
+        content: formData.content,
+        category: formData.category as "정보" | "경험" | "자료" | "공지",
+        author: user?.username || "익명",
+        date: new Date().toISOString().split('T')[0], // YYYY-MM-DD 형식
+        views: 0,
+        isOfficial: isAdmin ? formData.isOfficial : false,
+        isCounselor: isCounselor,
+      };
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error?.message || "게시글 작성에 실패했습니다.");
-      }
+      // 로컬 스토리지에서 기존 게시글 가져오기
+      const storedPosts = localStorage.getItem("boardPosts");
+      const posts = storedPosts ? JSON.parse(storedPosts) : [];
+      
+      // 새 게시글 추가
+      posts.push(newPost);
+      
+      // 로컬 스토리지에 저장
+      localStorage.setItem("boardPosts", JSON.stringify(posts));
 
       // 성공하면 게시판으로 리다이렉트
       router.push("/board");

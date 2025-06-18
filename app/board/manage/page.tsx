@@ -40,45 +40,6 @@ export default function ManageBoardPage() {
   const [user, setUser] = useState<User | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
 
-  // 샘플 데이터
-  const samplePosts = [
-    {
-      id: "post1",
-      title: "성 정체성과 성적 지향의 차이점 알아보기",
-      category: "정보",
-      author: {
-        username: "명동 상담사",
-        role: "counselor"
-      },
-      createdAt: "2023-05-15T12:00:00Z",
-      views: 245,
-      isOfficial: false,
-    },
-    {
-      id: "post2",
-      title: "청소년 성소수자를 위한 안전한 공간 찾기",
-      category: "자료",
-      author: {
-        username: "무지개 지원단",
-        role: "admin"
-      },
-      createdAt: "2023-05-18T12:00:00Z",
-      views: 189,
-      isOfficial: true,
-    },
-    {
-      id: "post3",
-      title: "[공지] 6월 청소년 퀴어 축제 안내",
-      category: "공지",
-      author: {
-        username: "명동 상담사",
-        role: "counselor"
-      },
-      createdAt: "2023-05-20T12:00:00Z",
-      views: 342,
-      isOfficial: true,
-    }
-  ];
 
   // 사용자 정보 로드
   useEffect(() => {
@@ -116,25 +77,30 @@ export default function ManageBoardPage() {
   const fetchPosts = async (token: string) => {
     setIsLoading(true);
     try {
-      // 실제 API 호출 - 현재는 샘플 데이터 사용
-      /* const response = await fetch("/api/posts/admin", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error?.message || "게시글 목록을 가져오는데 실패했습니다.");
+      // 로컬 스토리지에서 게시글 가져오기
+      const storedPosts = localStorage.getItem("boardPosts");
+      if (storedPosts) {
+        const parsedPosts = JSON.parse(storedPosts);
+        // 관리 페이지용 데이터 형식으로 변환
+        const managePosts = parsedPosts.map((post: any) => ({
+          id: post.id,
+          title: post.title,
+          category: post.category,
+          author: {
+            username: post.author,
+            role: post.isCounselor ? "counselor" : (post.isOfficial ? "admin" : "user")
+          },
+          createdAt: post.date + "T12:00:00Z",
+          views: post.views,
+          isOfficial: post.isOfficial || false
+        }));
+        setPosts(managePosts);
+      } else {
+        setPosts([]);
       }
-      
-      setPosts(data.data.items); */
-      
-      // 샘플 데이터 사용
-      setPosts(samplePosts);
-      
     } catch (error) {
       console.error("게시글 목록 로드 오류:", error);
+      setPosts([]);
     } finally {
       setIsLoading(false);
     }
@@ -147,21 +113,15 @@ export default function ManageBoardPage() {
     }
     
     try {
-      const token = localStorage.getItem("token");
+      // 로컬 스토리지에서 게시글 삭제
+      const storedPosts = localStorage.getItem("boardPosts");
+      if (storedPosts) {
+        const parsedPosts = JSON.parse(storedPosts);
+        const updatedPosts = parsedPosts.filter((post: any) => post.id !== postId);
+        localStorage.setItem("boardPosts", JSON.stringify(updatedPosts));
+      }
       
-      /* const response = await fetch(`/api/posts/${postId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error?.message || "게시글 삭제에 실패했습니다.");
-      } */
-      
-      // 임시로 클라이언트측에서 삭제
+      // 현재 화면에서도 삭제
       setPosts(posts.filter(post => post.id !== postId));
       alert("게시글이 성공적으로 삭제되었습니다.");
       

@@ -54,95 +54,21 @@ export default function BoardPage() {
     }
   }, []);
 
-  // 샘플 게시글 데이터
-  const posts: Post[] = [
-    {
-      id: "post1",
-      title: "성 정체성과 성적 지향의 차이점 알아보기",
-      content:
-        "성 정체성은 자신이 어떤 성별인지에 대한 내적 인식이고, 성적 지향은 어떤 성별에 감정적, 로맨틱, 성적으로 끌리는지를 의미합니다. 이 두 개념은 서로 다르며 독립적입니다.",
-      category: "정보",
-      author: "명동 상담사",
-      date: "2023-05-15",
-      views: 245,
-      isCounselor: true,
-    },
-    {
-      id: "post2",
-      title: "청소년 성소수자를 위한 안전한 공간 찾기",
-      content:
-        "청소년 성소수자들이 안전하게 자신을 표현하고 지원받을 수 있는 공간과 커뮤니티를 소개합니다. 온라인 커뮤니티부터 오프라인 모임까지 다양한 옵션이 있습니다.",
-      category: "자료",
-      author: "무지개 지원단",
-      date: "2023-05-18",
-      views: 189,
-      isOfficial: true,
-    },
-    {
-      id: "post3",
-      title: "[공지] 6월 청소년 퀴어 축제 안내",
-      content:
-        "6월 17일에 열리는 청소년 퀴어 축제에 여러분을 초대합니다. 다양한 워크샵과 문화 행사가 준비되어 있으니 많은 참여 부탁드립니다. 자세한 내용은 본문을 참고해주세요.",
-      category: "공지",
-      author: "명동 상담사",
-      date: "2023-05-20",
-      views: 342,
-      isOfficial: true,
-      isCounselor: true,
-    },
-    {
-      id: "post4",
-      title: "학교에서 차별을 경험했을 때 대처하는 방법",
-      content:
-        "학교에서 성 정체성이나 성적 지향으로 인한 차별을 경험할 때 도움이 될 수 있는 대처 방법과 자원을 소개합니다. 교사, 상담사, 그리고 지원 단체에 도움을 요청하는 방법을 알아보세요.",
-      category: "정보",
-      author: "교육 전문가",
-      date: "2023-05-22",
-      views: 276,
-    },
-    {
-      id: "post5",
-      title: "성소수자 청소년의 정신 건강 관리하기",
-      content:
-        "성소수자 청소년들이 경험할 수 있는 정신 건강 문제와 이를 관리하는 방법에 대해 알아봅니다. 자기 돌봄, 지원 네트워크 구축, 그리고 전문적인 도움을 구하는 방법을 소개합니다.",
-      category: "자료",
-      author: "건강 상담사",
-      date: "2023-05-25",
-      views: 215,
-      isCounselor: true,
-    },
-    {
-      id: "post6",
-      title: "논바이너리로서의 경험 이야기",
-      content:
-        "논바이너리 정체성을 가진 청소년의 경험담입니다. 자신의 정체성을 발견하고 받아들이는 과정, 그리고 주변 사람들과 소통하는 방법에 대한 이야기를 공유합니다.",
-      category: "경험",
-      author: "별빛",
-      date: "2023-05-28",
-      views: 198,
-    },
-    {
-      id: "post7",
-      title: "성소수자 청소년을 위한 추천 도서 및 미디어",
-      content:
-        "성소수자 청소년들에게 도움이 될 수 있는 책, 영화, 드라마, 웹툰 등의 미디어 콘텐츠를 소개합니다. 다양한 정체성과 경험을 다루는 작품들을 만나보세요.",
-      category: "자료",
-      author: "문화 큐레이터",
-      date: "2023-05-19",
-      views: 267,
-    },
-    {
-      id: "post8",
-      title: "10번째 생일 맞은 띵동…성소수 청소년 가정내 갈등·커밍아웃 고민 여전",
-      content:
-        "청소년 성소수자 지원단체 '띵동'이 10주년을 맞아 기념행사를 개최했습니다. 지난 10년간 약 9,000건의 상담 및 지원활동을 수행하며 성소수자 청소년들의 정신건강, 가족 갈등, 대인관계, 진로, 트랜지션 등을 지원해왔습니다. 특히 자살 위기와 자해 사례도 상당수 보고되어 사회적 차별과 혐오로 인한 청소년 성소수자들의 심각한 어려움이 드러났습니다. 정체성 존중을 위한 학교, 가정 문화 및 법제도 개선의 필요성이 강조되고 있으며, 청소년 성소수자들의 안전과 지지를 위한 지속적인 노력이 필요합니다.",
-      category: "정보",
-      author: "뉴스1 기사",
-      date: "2025-01-18",
-      views: 0,
-      isOfficial: true,
-    },
-  ]
+  // 게시글 데이터 (로컬 스토리지에서 관리)
+  const [posts, setPosts] = useState<Post[]>([])
+
+  // 게시글 로드
+  useEffect(() => {
+    const storedPosts = localStorage.getItem("boardPosts");
+    if (storedPosts) {
+      try {
+        setPosts(JSON.parse(storedPosts));
+      } catch (error) {
+        console.error("Failed to parse posts data:", error);
+        setPosts([]);
+      }
+    }
+  }, [])
 
   // 상태 관리
   const [activeTab, setActiveTab] = useState("all")
