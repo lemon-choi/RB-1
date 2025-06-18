@@ -88,7 +88,7 @@ export default function CreatePostPage() {
     });
   };
 
-  // 기사 크롤링 함수 (브라우저에서 직접 처리)
+  // 기사 크롤링 함수
   const handleCrawlArticle = async () => {
     if (!articleUrl.trim()) {
       alert("기사 URL을 입력해주세요.");
@@ -97,62 +97,32 @@ export default function CreatePostPage() {
 
     setIsCrawling(true);
     try {
-      // 크롬 확장 프로그램이나 CORS 프록시를 사용하여 크롤링
-      // 데모용으로 간단한 파싱 로직 구현
-      
-      // URL에서 도메인 추출
-      const url = new URL(articleUrl);
-      const domain = url.hostname;
-      
-      // 뉴스 사이트별 처리 로직 (기본적인 예시)
-      if (domain.includes('news1.kr')) {
-        // News1 기사 처리
-        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(articleUrl)}`);
-        const data = await response.json();
-        
-        if (data.contents) {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(data.contents, 'text/html');
-          
-          const title = doc.querySelector('h1')?.textContent?.trim() || "";
-          const contentElements = doc.querySelectorAll('div.article-body p, div.content p, article p');
-          const content = Array.from(contentElements)
-            .map(p => p.textContent?.trim())
-            .filter(text => text && text.length > 10)
-            .join('\n\n');
-          
-          const author = doc.querySelector('.writer, .author, .byline')?.textContent?.trim() || "뉴스1";
-          const dateElement = doc.querySelector('time, .date, .publish-date');
-          const publishDate = dateElement?.getAttribute('datetime') || 
-                            dateElement?.textContent?.match(/\d{4}-\d{2}-\d{2}/)?.[0] || 
-                            new Date().toISOString().split('T')[0];
+      // 크롤링 API 호출
+      const response = await fetch('/api/crawl-news', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url: articleUrl }),
+      });
 
-          setFormData({
-            ...formData,
-            title: title || "크롤링된 기사",
-            content: content || "기사 내용을 수동으로 입력해주세요.",
-            author: author,
-            publishDate: publishDate,
-          });
-          
-          alert("기사 정보를 성공적으로 가져왔습니다!");
-        } else {
-          throw new Error("기사 내용을 가져올 수 없습니다.");
-        }
-      } else {
-        // 다른 사이트의 경우 수동 입력 안내
-        alert("현재 News1.kr 사이트만 지원됩니다. 다른 사이트의 경우 수동으로 입력해주세요.");
+      const data = await response.json();
+      
+      if (data.success) {
         setFormData({
           ...formData,
-          title: "",
-          content: "기사 URL: " + articleUrl + "\n\n기사 내용을 여기에 입력해주세요.",
-          author: "외부 기사",
-          publishDate: new Date().toISOString().split('T')[0],
+          title: data.title || "",
+          content: data.content || "",
+          author: data.author || "뉴스 기사",
+          publishDate: data.publishDate || new Date().toISOString().split('T')[0],
         });
+        alert("기사 정보를 성공적으로 가져왔습니다!");
+      } else {
+        throw new Error(data.error || "기사 정보를 가져오는데 실패했습니다.");
       }
     } catch (error) {
       console.error("기사 크롤링 오류:", error);
-      alert("기사 정보를 가져오는데 실패했습니다. 수동으로 입력해주세요.");
+      alert("기사 정보를 가져오는데 실패했습니다. URL을 확인해주세요.");
       
       // 실패시에도 URL은 내용에 포함
       setFormData({
