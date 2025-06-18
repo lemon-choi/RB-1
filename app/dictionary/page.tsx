@@ -136,20 +136,15 @@ export default function DictionaryPage() {
 
     const lowerSearchTerm = searchTerm.toLowerCase().trim()
     
-    // 정확한 제목 매칭을 우선으로 하고, 부분 매칭도 허용
-    const exactTitleMatch = 
-      term.title.toLowerCase() === lowerSearchTerm ||
-      term.titleEn.toLowerCase() === lowerSearchTerm
+    // 제목에서는 부분 매칭 허용 (에이 → 에이섹슈얼, 에이로맨틱 검색 가능)
+    const titleMatch = 
+      term.title.toLowerCase().includes(lowerSearchTerm) ||
+      term.titleEn.toLowerCase().includes(lowerSearchTerm)
     
-    // 제목에서 단어 경계를 고려한 매칭 (정확한 단어 매칭)
-    const wordBoundaryMatch = 
-      new RegExp(`\\b${lowerSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(term.title) ||
-      new RegExp(`\\b${lowerSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(term.titleEn)
-    
-    // 설명에서도 단어 경계 매칭 적용 (정확한 단어만 매칭)
+    // 설명에서는 단어 경계 매칭 적용 (에이 → 데미섹슈얼의 "에이섹슈얼" 단어 제외)
     const descriptionMatch = new RegExp(`\\b${lowerSearchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(term.description)
     
-    const matchesSearch = exactTitleMatch || wordBoundaryMatch || descriptionMatch
+    const matchesSearch = titleMatch || descriptionMatch
 
     if (activeTab === "all") return matchesSearch
     if (activeTab === "featured") return matchesSearch && term.isFeatured
