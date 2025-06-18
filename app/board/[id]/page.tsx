@@ -1,6 +1,7 @@
 "use client"
 
 import { useParams } from "next/navigation"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
@@ -29,9 +30,62 @@ interface Post {
 export default function PostDetailPage() {
   const params = useParams()
   const postId = params.id as string
+  const [post, setPost] = useState<Post | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // 샘플 게시글 데이터 (실제로는 API에서 가져올 것)
-  const posts: Record<string, Post> = {
+  // localStorage에서 게시글 데이터 가져오기
+  useEffect(() => {
+    const loadPost = () => {
+      try {
+        const storedPosts = localStorage.getItem("boardPosts");
+        if (storedPosts) {
+          const posts = JSON.parse(storedPosts);
+          const foundPost = posts.find((p: Post) => p.id === postId);
+          
+          if (foundPost) {
+            // 조회수 증가
+            const updatedPosts = posts.map((p: Post) => 
+              p.id === postId ? { ...p, views: (p.views || 0) + 1 } : p
+            );
+            localStorage.setItem("boardPosts", JSON.stringify(updatedPosts));
+            
+            // 조회수가 증가된 게시글로 설정
+            setPost({ ...foundPost, views: (foundPost.views || 0) + 1 });
+          } else {
+            setPost(null);
+          }
+        } else {
+          setPost(null);
+        }
+      } catch (error) {
+        console.error("게시글 로드 오류:", error);
+        setPost(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPost();
+  }, [postId]);
+
+  // 로딩 중
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen flex-col bg-[#FEF9F2]">
+        <MainNav />
+        <main className="flex-1 pt-20">
+          <div className="container mx-auto px-4 py-8">
+            <div className="text-center py-20">
+              <h1 className="text-xl font-medium mb-4">게시글 로딩 중...</h1>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // 샘플 게시글 데이터 (fallback용)
+  const samplePosts: Record<string, Post> = {
     post1: {
       id: "post1",
       title: "성 정체성과 성적 지향의 차이점 알아보기",
@@ -132,10 +186,11 @@ export default function PostDetailPage() {
     },
   }
 
-  const post = posts[postId]
+  // localStorage에서 찾지 못한 경우 샘플 데이터에서 찾기
+  const finalPost = post || samplePosts[postId];
 
   // 게시글이 없는 경우
-  if (!post) {
+  if (!finalPost) {
     return (
       <div className="flex min-h-screen flex-col bg-[#FEF9F2]">
         <MainNav />
@@ -182,25 +237,25 @@ export default function PostDetailPage() {
               <CardHeader className="pb-2 border-b">
                 <div className="flex flex-col space-y-4">
                   <div className="flex items-center space-x-2">
-                    <Badge className={categoryColors[post.category]}>{post.category}</Badge>
-                    {post.isOfficial && (
+                    <Badge className={categoryColors[finalPost.category]}>{finalPost.category}</Badge>
+                    {finalPost.isOfficial && (
                       <Badge variant="outline" className="text-[#E8D595] border-[#F5EDD5] rounded-full">
                         공식 자료
                       </Badge>
                     )}
                   </div>
-                  <h1 className="text-2xl font-bold text-gray-900">{post.title}</h1>
+                  <h1 className="text-2xl font-bold text-gray-900">{finalPost.title}</h1>
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
                       <Avatar className="h-8 w-8 mr-2">
                         <AvatarImage
-                          src={`/abstract-avatar.png?key=8t0x6&height=40&width=40&query=abstract avatar ${post.author}`}
+                          src={`/abstract-avatar.png?key=8t0x6&height=40&width=40&query=abstract avatar ${finalPost.author}`}
                         />
-                        <AvatarFallback>{post.author[0]}</AvatarFallback>
+                        <AvatarFallback>{finalPost.author[0]}</AvatarFallback>
                       </Avatar>
                       <span className="font-medium">
-                        {post.author}
-                        {post.isCounselor && (
+                        {finalPost.author}
+                        {finalPost.isCounselor && (
                           <Badge
                             variant="outline"
                             className="ml-2 text-[#7EAED9] border-[#D0E3F2] text-xs rounded-full"
@@ -213,11 +268,11 @@ export default function PostDetailPage() {
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
                       <div className="flex items-center">
                         <Calendar className="h-4 w-4 mr-1" />
-                        <span>{post.date}</span>
+                        <span>{finalPost.date}</span>
                       </div>
                       <div className="flex items-center">
                         <Eye className="h-4 w-4 mr-1" />
-                        <span>{post.views}</span>
+                        <span>{finalPost.views}</span>
                       </div>
                     </div>
                   </div>
@@ -225,18 +280,20 @@ export default function PostDetailPage() {
               </CardHeader>
               <CardContent className="py-6">
                 <div className="prose max-w-none">
-                  {post.content.split("\n\n").map((paragraph, index) => (
-                    <p key={index} className="mb-4">
-                      {paragraph}
+                  {finalPost.content.split("\n\n").map((paragraph, index) => (
+                    <p key={index} className="mb-4 text-gray-700 leading-relaxed">
+                      {paragraph.split('**').map((part, idx) => 
+                        idx % 2 === 1 ? <strong key={idx} className="font-semibold text-gray-900">{part}</strong> : part
+                      )}
                     </p>
                   ))}
                 </div>
 
-                {post.relatedLinks && post.relatedLinks.length > 0 && (
+                {finalPost.relatedLinks && finalPost.relatedLinks.length > 0 && (
                   <div className="mt-8 bg-[#F5F9FD] p-4 rounded-2xl">
                     <h3 className="font-semibold text-[#7EAED9] mb-2">관련 링크</h3>
                     <ul className="space-y-2">
-                      {post.relatedLinks.map((link, index) => (
+                      {finalPost.relatedLinks.map((link, index) => (
                         <li key={index}>
                           <Link href={link.url} className="text-[#7EAED9] hover:underline">
                             {link.title}

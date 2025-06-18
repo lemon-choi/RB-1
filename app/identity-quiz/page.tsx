@@ -470,7 +470,7 @@ export default function IdentityQuizPage() {
       id: "asexual",
       title: "에이섹슈얼(무성애자)",
       description: "당신은 다른 사람들에게 성적 끌림을 거의 또는 전혀 느끼지 않을 수 있습니다.",
-      imageUrl: "/abstract-queer-minimalist.png",
+      imageUrl: "/identity-quiz-character.png",
       details:
         "에이섹슈얼(무성애)은 다른 사람에게 성적 끌림을 거의 또는 전혀 느끼지 않는 성적 지향입니다. 에이섹슈얼 스펙트럼에는 다양한 정체성이 존재합니다. 에이섹슈얼이라고 해서 반드시 로맨틱한 끌림을 느끼지 않는 것은 아니며, 많은 에이섹슈얼 사람들은 친밀한 관계와 정서적 연결을 원합니다.",
       resources: [
@@ -722,7 +722,7 @@ export default function IdentityQuizPage() {
                     src={result?.imageUrl || "/placeholder.svg"}
                     alt={result?.title || ""}
                     fill
-                    className="object-cover"
+                    className="object-contain"
                   />
                 </div>
                 <CardHeader>
