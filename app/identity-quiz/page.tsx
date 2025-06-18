@@ -764,7 +764,7 @@ export default function IdentityQuizPage() {
                     <div className="flex-1">
                       <div className="relative h-48 w-full rounded-xl overflow-hidden mb-4">
                         <Image
-                          src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxEQEBUREBAVFhUVFxUVFRYVFhUVFhUVFhcZFhYWFhUYHSggGBolHRUVITIhJikrLy4vFx8zODMsNygtLisBCgoKDg0OGxAQGislHyUtLy0tKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAPsAyQMBEQACEQEDEQH/xAAcAAABBQEBAQAAAAAAAAAAAAAAAQMEBQYCBwj/xABJEAABAwIDBAcDCAUMAQUAAAABAAIRAyEEEjEFIkFRBhNhcYGRoQcy8RRCUnKSscHwF1OCk+EVIyQzQ2Jjc6Ky0vHCJTV0g7P/xAAaAQEAAgMBAAAAAAAAAAAAAAAAAQQCAwUG/8QAOREAAgEDAwIEBQMDAwIHAAAAAAECAwQREiExQVEFE2FxFCIygZEzofCxweEkQtEGYgYVNFJywvH/2gAMAwEAAhEDEQA/APRVbOMKgBACAEAIAQAgBAEIAUAEAIAQAgFQHm3TLo/VxVW1RxA7Z84WStTcEtnuXKFaMv8A60X9fo7WpzIIGhVCpbzhuaZXEW8IrKGGrFxGcRzJVVQqZZecopdBiujdWoTlqBtphpBPqtqoTXRmn4mJZYWkWgCbq1BYRpnLLHVkahEAIAQAgBACAEAIAQAgBAf/2Q=="
+                          src="/heartstopper.jpg"
                           alt="하트스토퍼"
                           fill
                           className="object-cover"
