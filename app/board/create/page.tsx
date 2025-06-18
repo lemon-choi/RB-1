@@ -11,7 +11,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
-import { ArrowLeft, Save, X } from "lucide-react"
+import { ArrowLeft, Save, X, Globe, Loader2 } from "lucide-react"
 import { MainNav } from "@/components/main-nav"
 import { RainbowText } from "@/components/rainbow-text"
 
@@ -25,14 +25,18 @@ interface User {
 export default function CreatePostPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [isCrawling, setIsCrawling] = useState(false)
   const [user, setUser] = useState<User | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
   const [isCounselor, setIsCounselor] = useState(false)
+  const [articleUrl, setArticleUrl] = useState("")
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     category: "정보",
     isOfficial: false,
+    author: "",
+    publishDate: "",
   })
 
   // 사용자 정보 로드
@@ -84,6 +88,84 @@ export default function CreatePostPage() {
     });
   };
 
+  // 기사 크롤링 함수 (브라우저에서 직접 처리)
+  const handleCrawlArticle = async () => {
+    if (!articleUrl.trim()) {
+      alert("기사 URL을 입력해주세요.");
+      return;
+    }
+
+    setIsCrawling(true);
+    try {
+      // 크롬 확장 프로그램이나 CORS 프록시를 사용하여 크롤링
+      // 데모용으로 간단한 파싱 로직 구현
+      
+      // URL에서 도메인 추출
+      const url = new URL(articleUrl);
+      const domain = url.hostname;
+      
+      // 뉴스 사이트별 처리 로직 (기본적인 예시)
+      if (domain.includes('news1.kr')) {
+        // News1 기사 처리
+        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(articleUrl)}`);
+        const data = await response.json();
+        
+        if (data.contents) {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(data.contents, 'text/html');
+          
+          const title = doc.querySelector('h1')?.textContent?.trim() || "";
+          const contentElements = doc.querySelectorAll('div.article-body p, div.content p, article p');
+          const content = Array.from(contentElements)
+            .map(p => p.textContent?.trim())
+            .filter(text => text && text.length > 10)
+            .join('\n\n');
+          
+          const author = doc.querySelector('.writer, .author, .byline')?.textContent?.trim() || "뉴스1";
+          const dateElement = doc.querySelector('time, .date, .publish-date');
+          const publishDate = dateElement?.getAttribute('datetime') || 
+                            dateElement?.textContent?.match(/\d{4}-\d{2}-\d{2}/)?.[0] || 
+                            new Date().toISOString().split('T')[0];
+
+          setFormData({
+            ...formData,
+            title: title || "크롤링된 기사",
+            content: content || "기사 내용을 수동으로 입력해주세요.",
+            author: author,
+            publishDate: publishDate,
+          });
+          
+          alert("기사 정보를 성공적으로 가져왔습니다!");
+        } else {
+          throw new Error("기사 내용을 가져올 수 없습니다.");
+        }
+      } else {
+        // 다른 사이트의 경우 수동 입력 안내
+        alert("현재 News1.kr 사이트만 지원됩니다. 다른 사이트의 경우 수동으로 입력해주세요.");
+        setFormData({
+          ...formData,
+          title: "",
+          content: "기사 URL: " + articleUrl + "\n\n기사 내용을 여기에 입력해주세요.",
+          author: "외부 기사",
+          publishDate: new Date().toISOString().split('T')[0],
+        });
+      }
+    } catch (error) {
+      console.error("기사 크롤링 오류:", error);
+      alert("기사 정보를 가져오는데 실패했습니다. 수동으로 입력해주세요.");
+      
+      // 실패시에도 URL은 내용에 포함
+      setFormData({
+        ...formData,
+        content: "기사 URL: " + articleUrl + "\n\n기사 내용을 여기에 입력해주세요.",
+        author: "외부 기사",
+        publishDate: new Date().toISOString().split('T')[0],
+      });
+    } finally {
+      setIsCrawling(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -95,8 +177,8 @@ export default function CreatePostPage() {
         title: formData.title,
         content: formData.content,
         category: formData.category as "정보" | "경험" | "자료" | "공지",
-        author: user?.username || "익명",
-        date: new Date().toISOString().split('T')[0], // YYYY-MM-DD 형식
+        author: formData.author || user?.username || "익명",
+        date: formData.publishDate || new Date().toISOString().split('T')[0], // YYYY-MM-DD 형식
         views: 0,
         isOfficial: isAdmin ? formData.isOfficial : false,
         isCounselor: isCounselor,
@@ -146,6 +228,40 @@ export default function CreatePostPage() {
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* 기사 크롤링 섹션 */}
+                  <div className="space-y-4 p-4 bg-blue-50 rounded-xl">
+                    <Label className="text-blue-700 font-semibold">기사 자동 입력</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="기사 URL을 입력하세요 (예: https://www.news1.kr/...)"
+                        className="rounded-xl"
+                        value={articleUrl}
+                        onChange={(e) => setArticleUrl(e.target.value)}
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleCrawlArticle}
+                        disabled={isCrawling}
+                        className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-6"
+                      >
+                        {isCrawling ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            크롤링 중...
+                          </>
+                        ) : (
+                          <>
+                            <Globe className="mr-2 h-4 w-4" />
+                            가져오기
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                    <p className="text-sm text-blue-600">
+                      기사 URL을 입력하고 '가져오기'를 클릭하면 제목, 내용, 작성자, 날짜가 자동으로 입력됩니다.
+                    </p>
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="title">제목</Label>
                     <Input
@@ -175,6 +291,31 @@ export default function CreatePostPage() {
                         {isAdmin && <SelectItem value="공지">공지</SelectItem>}
                       </SelectContent>
                     </Select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="author">작성자</Label>
+                      <Input
+                        id="author"
+                        name="author"
+                        placeholder="작성자명"
+                        className="rounded-xl"
+                        value={formData.author}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="publishDate">발행일</Label>
+                      <Input
+                        id="publishDate"
+                        name="publishDate"
+                        type="date"
+                        className="rounded-xl"
+                        value={formData.publishDate}
+                        onChange={handleChange}
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-2">
