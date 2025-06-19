@@ -8,6 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ArrowLeft, Calendar, Eye } from "lucide-react"
+import Image from "next/image"
 import { MainNav } from "@/components/main-nav"
 
 // 게시글 타입 정의
@@ -15,12 +16,13 @@ interface Post {
   id: string
   title: string
   content: string
-  category: "정보" | "경험" | "자료" | "공지"
+  category: "공지" | "정보" | "칼럼" | "자료" 
   author: string
   date: string
   views: number
   isOfficial?: boolean
   isCounselor?: boolean
+  images?: string[]
   relatedLinks?: {
     title: string
     url: string
@@ -86,36 +88,36 @@ export default function PostDetailPage() {
 
   // 샘플 게시글 데이터 (fallback용)
   const samplePosts: Record<string, Post> = {
-    post1: {
-      id: "post1",
-      title: "성 정체성과 성적 지향의 차이점 알아보기",
-      content: `성 정체성과 성적 지향은 종종 혼동되는 개념이지만, 실제로는 매우 다른 의미를 가지고 있습니다.
+    sample1: {
+      id: "sample1",
+      title: "[공지] 6월 서울퀴어퍼레이드 안내",
+      content: `6월 14일에 열리는 제 26회 서울퀴어퍼레이드에 여러분을 초대합니다. 다양한 부스와 무대 공연, 행진이 준비되어 있으니 많은 참여 부탁드립니다.
 
-**성 정체성(Gender Identity)**은 자신이 어떤 성별인지에 대한 내적인 인식입니다. 이는 출생 시 지정된 성별과 일치할 수도 있고, 다를 수도 있습니다. 시스젠더는 출생 시 지정된 성별과 성 정체성이 일치하는 경우를 말하며, 트랜스젠더는 출생 시 지정된 성별과 성 정체성이 다른 경우를 말합니다. 또한 논바이너리, 젠더퀴어, 젠더플루이드 등 이분법적인 성별 구분에 속하지 않는 다양한 성 정체성이 있습니다.
+**행사 개요**
+\n
+- 일시: 2025년 6월 14일 (토)
+\n
+- 장소: 서울시 남대문로 및 우정국로 일대
+\n
+- 대상: 퀴어 문화축제를 즐기고 싶은 누구나
+\n\n
 
-**성적 지향(Sexual Orientation)**은 어떤 성별에 감정적, 로맨틱, 성적으로 끌리는지를 의미합니다. 이는 이성애, 동성애, 양성애, 범성애, 무성애 등 다양한 형태로 나타날 수 있습니다.
 
-중요한 점은 성 정체성과 성적 지향은 서로 독립적이라는 것입니다. 예를 들어, 트랜스젠더 여성(출생 시 남성으로 지정되었지만 여성으로 정체화하는 사람)은 여성에게 끌릴 수도, 남성에게 끌릴 수도, 모든 성별에게 끌릴 수도 있습니다.
-
-자신의 성 정체성과 성적 지향을 탐색하는 것은 개인적인 여정이며, 시간이 걸릴 수 있습니다. 중요한 것은 자신을 있는 그대로 받아들이고, 자신에게 맞는 레이블을 찾는 것이 아니라 자신을 이해하는 것입니다.`,
-      category: "정보",
+더 자세한 정보는 서울퀴어문화축제 공식 웹사이트 및 인스타그램 계정을 참고해 주세요.
+\n
+공식 웹사이트: www.sqcf.org/link
+\n
+인스타그램: @sqcforg`,
+      category: "공지",
       author: "명동 상담사",
-      date: "2023-05-15",
-      views: 245,
+      date: "2023-05-20",
+      views: 342,
+      isOfficial: true,
       isCounselor: true,
-      relatedLinks: [
-        {
-          title: "성 정체성에 대한 더 자세한 정보",
-          url: "/dictionary/gender-identity",
-        },
-        {
-          title: "성적 지향에 대한 더 자세한 정보",
-          url: "/dictionary/sexual-orientation",
-        },
-      ],
+      images: ["/sqcforg.jpg"],
     },
-    post2: {
-      id: "post2",
+    sample2: {
+      id: "sample2",
       title: "청소년 성소수자를 위한 안전한 공간 찾기",
       content: `청소년 성소수자들이 안전하게 자신을 표현하고 지원받을 수 있는 공간을 찾는 것은 매우 중요합니다. 이 글에서는 다양한 안전한 공간과 커뮤니티를 소개합니다.
 
@@ -151,38 +153,54 @@ export default function PostDetailPage() {
         },
       ],
     },
-    post3: {
-      id: "post3",
-      title: "[공지] 6월 청소년 퀴어 축제 안내",
-      content: `6월 17일에 열리는 청소년 퀴어 축제에 여러분을 초대합니다. 다양한 워크샵과 문화 행사가 준비되어 있으니 많은 참여 부탁드립니다.
+    sample3: {
+      id: "sample3",
+      title: "성 정체성과 성적 지향의 차이점 알아보기",
+      content: `성 정체성과 성적 지향은 종종 혼동되는 개념이지만, 실제로는 매우 다른 의미를 가지고 있습니다.
 
-**행사 개요**
-- 일시: 2023년 6월 17일 (토) 13:00 - 18:00
-- 장소: 서울시 중구 청소년센터 다목적홀
-- 대상: 만 13세 - 24세 청소년 (성인 동반 가능)
-- 참가비: 무료
+**성 정체성(Gender Identity)**은 자신이 어떤 성별인지에 대한 내적인 인식입니다. 이는 출생 시 지정된 성별과 일치할 수도 있고, 다를 수도 있습니다. 시스젠더는 출생 시 지정된 성별과 성 정체성이 일치하는 경우를 말하며, 트랜스젠더는 출생 시 지정된 성별과 성 정체성이 다른 경우를 말합니다. 또한 논바이너리, 젠더퀴어, 젠더플루이드 등 이분법적인 성별 구분에 속하지 않는 다양한 성 정체성이 있습니다.
 
-**주요 프로그램**
-1. 정체성 탐색 워크샵 (13:30 - 14:30)
-2. 청소년 성소수자 인권 강연 (15:00 - 16:00)
-3. 문화 공연 및 교류회 (16:30 - 18:00)
+**성적 지향(Sexual Orientation)**은 어떤 성별에 감정적, 로맨틱, 성적으로 끌리는지를 의미합니다. 이는 이성애, 동성애, 양성애, 범성애, 무성애 등 다양한 형태로 나타날 수 있습니다.
 
-**참가 신청 방법**
-아래 링크를 통해 사전 등록해주세요. 사전 등록자에게는 기념품이 제공됩니다.
-[사전 등록 링크: www.youthqueerfestival.org/register]
+중요한 점은 성 정체성과 성적 지향은 서로 독립적이라는 것입니다. 예를 들어, 트랜스젠더 여성(출생 시 남성으로 지정되었지만 여성으로 정체화하는 사람)은 여성에게 끌릴 수도, 남성에게 끌릴 수도, 모든 성별에게 끌릴 수도 있습니다.
 
-**안전 및 비밀 보장**
-- 모든 참가자의 개인정보는 철저히 보호됩니다.
-- 행사 중 촬영은 제한되며, 모든 사진 촬영은 동의를 받은 후에만 가능합니다.
-- 행사장 입구에서 신분 확인 없이 입장 가능합니다.
-
-더 자세한 정보는 공식 웹사이트를 참고해주세요. 궁금한 점이 있으시면 이메일로 문의해주세요: info@youthqueerfestival.org`,
-      category: "공지",
+자신의 성 정체성과 성적 지향을 탐색하는 것은 개인적인 여정이며, 시간이 걸릴 수 있습니다. 중요한 것은 자신을 있는 그대로 받아들이고, 자신에게 맞는 레이블을 찾는 것이 아니라 자신을 이해하는 것입니다.`,
+      category: "정보",
       author: "명동 상담사",
-      date: "2023-05-20",
-      views: 342,
-      isOfficial: true,
+      date: "2023-05-15",
+      views: 245,
       isCounselor: true,
+      relatedLinks: [
+        {
+          title: "성 정체성에 대한 더 자세한 정보",
+          url: "/dictionary/gender-identity",
+        },
+        {
+          title: "성적 지향에 대한 더 자세한 정보",
+          url: "/dictionary/sexual-orientation",
+        },
+      ],
+    },
+    sample4: {
+      id: "sample4",
+      title: "처음으로 커밍아웃했던 날",
+      content: `오늘은 제가 처음으로 친구에게 커밍아웃했던 경험을 나누고 싶습니다. 많은 고민과 두려움이 있었지만...
+
+**결심의 순간**
+고등학교 2학년 때였습니다. 더 이상 혼자서 이 무거운 비밀을 안고 살 수 없다는 생각이 들었어요. 가장 가까운 친구 한 명에게라도 진실을 말하고 싶었습니다.
+
+**대화의 시작**
+"너에게 말하고 싶은 게 있어"라고 시작했습니다. 심장이 터질 것 같았지만, 용기를 내어 제 성향에 대해 이야기했어요.
+
+**친구의 반응**
+다행히 친구는 저를 받아들여 주었습니다. "그래서 뭐? 너는 여전히 내 소중한 친구야"라고 말해줘서 정말 감사했어요.
+
+**그 이후**
+커밍아웃 후 마음이 한결 가벼워졌습니다. 물론 모든 사람에게 말할 필요는 없지만, 믿을 수 있는 사람 한 명이라도 있다는 것이 큰 힘이 되었습니다.`,
+      category: "칼럼",
+      author: "레인보우 청년",
+      date: "2023-05-12",
+      views: 156,
     },
   }
 
@@ -212,7 +230,7 @@ export default function PostDetailPage() {
   // 카테고리별 배지 색상
   const categoryColors = {
     정보: "bg-[#F5F9FD] text-[#7EAED9] hover:bg-[#E6F3FA] rounded-full",
-    경험: "bg-[#F7F5FC] text-[#A091E6] hover:bg-[#F0EDFA] rounded-full",
+    칼럼: "bg-[#F7F5FC] text-[#A091E6] hover:bg-[#F0EDFA] rounded-full",
     자료: "bg-[#FDFBF5] text-[#E8D595] hover:bg-[#F9F6E8] rounded-full",
     공지: "bg-[#FEF6F2] text-[#F3B391] hover:bg-[#FDEEE7] rounded-full",
   }
@@ -288,6 +306,23 @@ export default function PostDetailPage() {
                     </p>
                   ))}
                 </div>
+
+                {/* 이미지 섹션 */}
+                {finalPost.images && finalPost.images.length > 0 && (
+                  <div className="mt-6 space-y-4">
+                    {finalPost.images.map((imageSrc, index) => (
+                      <div key={index} className="relative w-full rounded-2xl overflow-hidden">
+                        <Image
+                          src={imageSrc}
+                          alt={`게시글 이미지 ${index + 1}`}
+                          width={800}
+                          height={400}
+                          className="w-full h-auto object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {finalPost.relatedLinks && finalPost.relatedLinks.length > 0 && (
                   <div className="mt-8 bg-[#F5F9FD] p-4 rounded-2xl">

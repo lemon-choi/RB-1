@@ -8,7 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { ArrowLeft, Search, AlertCircle, PenSquare } from "lucide-react"
+import { ArrowLeft, Search, AlertCircle, PenSquare, Megaphone } from "lucide-react"
 import { MainNav } from "@/components/main-nav"
 import { RainbowText } from "@/components/rainbow-text"
 
@@ -17,12 +17,13 @@ interface Post {
   id: string
   title: string
   content: string
-  category: "정보" | "경험" | "자료" | "공지"
+  category: "정보" | "칼럼" | "자료" | "공지"
   author: string
   date: string
   views: number
   isOfficial?: boolean
   isCounselor?: boolean
+  images?: string[]
 }
 
 interface User {
@@ -54,6 +55,52 @@ export default function BoardPage() {
     }
   }, []);
 
+  // 샘플 게시글 데이터 (fallback용)
+  const samplePosts: Post[] = [
+    {
+      id: "sample1",
+      title: "[공지] 6월 퀴어문화축제 안내",
+      content: "6월 14일에 열리는 퀴어문화축제에 여러분을 초대합니다. 다양한 부스와 행사가 준비되어 있으니 많은 참여 부탁드립니다.",
+      category: "공지",
+      author: "명동 상담사",
+      date: "2023-05-20",
+      views: 342,
+      isOfficial: true,
+      isCounselor: true,
+      images: ["/sqcforg.jpg"],
+    },
+    {
+      id: "sample2",
+      title: "청소년 성소수자를 위한 안전한 공간 찾기",
+      content: "청소년 성소수자들이 안전하게 자신을 표현하고 지원받을 수 있는 공간을 찾는 것은 매우 중요합니다. 이 글에서는 다양한 안전한 공간과 커뮤니티를 소개합니다.",
+      category: "자료",
+      author: "무지개 지원단",
+      date: "2023-05-18",
+      views: 189,
+      isOfficial: true,
+    },
+    {
+      id: "sample3",
+      title: "성 정체성과 성적 지향의 차이점 알아보기",
+      content: "성 정체성과 성적 지향은 종종 혼동되는 개념이지만, 실제로는 다른 의미를 가지고 있습니다.",
+      category: "정보",
+      author: "명동 상담사",
+      date: "2023-05-15",
+      views: 245,
+      isCounselor: true,
+    },
+    {
+      id: "sample4",
+      title: "처음으로 커밍아웃했던 날",
+      content: "오늘은 제가 처음으로 친구에게 커밍아웃했던 경험을 나누고 싶습니다. 많은 고민과 두려움이 있었지만...",
+      category: "칼럼",
+      author: "레인보우 청년",
+      date: "2023-05-12",
+      views: 156,
+      images: ["/heartstopper.jpg"],
+    }
+  ];
+
   // 게시글 데이터 (로컬 스토리지에서 관리)
   const [posts, setPosts] = useState<Post[]>([])
 
@@ -62,11 +109,14 @@ export default function BoardPage() {
     const storedPosts = localStorage.getItem("boardPosts");
     if (storedPosts) {
       try {
-        setPosts(JSON.parse(storedPosts));
+        const parsedPosts = JSON.parse(storedPosts);
+        setPosts(parsedPosts.length > 0 ? parsedPosts : samplePosts);
       } catch (error) {
         console.error("Failed to parse posts data:", error);
-        setPosts([]);
+        setPosts(samplePosts);
       }
+    } else {
+      setPosts(samplePosts);
     }
   }, [])
 
@@ -92,7 +142,7 @@ export default function BoardPage() {
   // 카테고리별 배지 색상
   const categoryColors = {
     정보: "bg-[#F5F9FD] text-[#7EAED9] hover:bg-[#E6F3FA] rounded-full",
-    경험: "bg-[#F7F5FC] text-[#A091E6] hover:bg-[#F0EDFA] rounded-full",
+    칼럼: "bg-[#F7F5FC] text-[#A091E6] hover:bg-[#F0EDFA] rounded-full",
     자료: "bg-[#FDFBF5] text-[#E8D595] hover:bg-[#F9F6E8] rounded-full",
     공지: "bg-[#FEF6F2] text-[#F3B391] hover:bg-[#FDEEE7] rounded-full",
   }
@@ -158,17 +208,17 @@ export default function BoardPage() {
               <TabsTrigger value="all" className="rounded-full">
                 전체
               </TabsTrigger>
+              <TabsTrigger value="공지" className="rounded-full">
+                공지
+              </TabsTrigger>
               <TabsTrigger value="정보" className="rounded-full">
                 정보
-              </TabsTrigger>
-              <TabsTrigger value="경험" className="rounded-full">
-                경험담
               </TabsTrigger>
               <TabsTrigger value="자료" className="rounded-full">
                 자료
               </TabsTrigger>
-              <TabsTrigger value="공지" className="rounded-full">
-                공지
+              <TabsTrigger value="칼럼" className="rounded-full">
+                칼럼
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -178,11 +228,24 @@ export default function BoardPage() {
             {filteredPosts.length > 0 ? (
               filteredPosts.map((post) => (
                 <Link href={`/board/${post.id}`} key={post.id}>
-                  <Card className="hover:shadow-md transition-shadow rounded-3xl border-gray-200 cursor-pointer">
+                  <Card className={`hover:shadow-md transition-shadow rounded-3xl cursor-pointer ${
+                    post.category === "공지" 
+                      ? "border-[#F3B391] bg-gradient-to-r from-[#FEF6F2] to-[#FFFFFF] shadow-md" 
+                      : "border-gray-200"
+                  }`}>
                     <CardHeader className="pb-2">
                       <div className="flex justify-between items-start">
-                        <div>
-                          <CardTitle className="text-lg text-gray-900">{post.title}</CardTitle>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            {post.category === "공지" && (
+                              <Megaphone className="h-5 w-5 text-[#F3B391]" />
+                            )}
+                            <CardTitle className={`text-lg ${
+                              post.category === "공지" ? "text-[#D4622A] font-bold" : "text-gray-900"
+                            }`}>
+                              {post.title}
+                            </CardTitle>
+                          </div>
                           <div className="flex items-center mt-1 space-x-2">
                             <Badge className={categoryColors[post.category]}>{post.category}</Badge>
                             {post.isOfficial && (
@@ -232,8 +295,12 @@ export default function BoardPage() {
             ) : (
               <div className="text-center py-10 bg-white rounded-3xl shadow-sm">
                 <AlertCircle className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-xl font-medium text-gray-600 mb-2">검색 결과가 없습니다</h3>
-                <p className="text-gray-500">다른 검색어를 입력하거나 필터를 변경해보세요.</p>
+                <h3 className="text-xl font-medium text-gray-600 mb-2">
+                  {searchTerm ? "검색 결과가 없습니다" : "게시글이 없습니다"}
+                </h3>
+                <p className="text-gray-500">
+                  {searchTerm ? "다른 검색어를 입력하거나 필터를 변경해보세요." : "아직 작성된 게시글이 없습니다."}
+                </p>
               </div>
             )}
           </div>

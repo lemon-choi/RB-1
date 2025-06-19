@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, MessageSquare, ExternalLink, Phone, Mail, Clock, Shield, Heart } from "lucide-react"
+import { ArrowLeft, MessageSquare, ExternalLink, Phone, Mail, Clock, Shield, Heart, MapPin } from "lucide-react"
 import { MainNav } from "@/components/main-nav"
 import { RainbowGradient } from "@/components/rainbow-gradient"
 import { RainbowText } from "@/components/rainbow-text"
@@ -13,22 +13,12 @@ import { motion } from "framer-motion"
 export default function LeverPage() {
   const handleKakaoTalk = () => {
     // 카카오톡 상담 연결 (실제 구현 시 띵동의 카카오톡 채널 ID 사용)
-    window.open("https://pf.kakao.com/_xdxoTxj", "_blank") // 예시 URL
+    window.open("https://pf.kakao.com/_AHndV", "_blank") // 예시 URL
   }
 
   const handleWebsiteVisit = () => {
     // 띵동 웹사이트로 이동
     window.open("https://ddingdong.kr", "_blank") // 실제 띵동 웹사이트 URL
-  }
-
-  const handlePhoneCall = () => {
-    // 전화 상담 연결
-    window.location.href = "tel:02-1234-5678" // 실제 띵동 전화번호
-  }
-
-  const handleEmailContact = () => {
-    // 이메일 상담 연결
-    window.location.href = "mailto:help@ddingdong.kr" // 실제 띵동 이메일
   }
 
   return (
@@ -53,9 +43,9 @@ export default function LeverPage() {
                 <RainbowText>🎯 레버를 당겨보세요!</RainbowText>
               </h1>
               <p className="text-lg text-[#555555] max-w-2xl mx-auto mb-8">
-                혼자서 고민하지 마세요. 전문가들이 여러분의 이야기를 들을 준비가 되어 있어요.
+                혼자서 고민하지 마세요. <span className="font-medium text-[#FF71CE]">띵동</span>은 여러분의 이야기를 들을 준비가 되어 있어요.
                 <br />
-                <span className="font-medium text-[#FF71CE]">띵동</span>과 함께 안전하고 따뜻한 대화를 나눠보세요.
+                정체성 고민부터 탈가정, 폭력 등 위기 상황 어려움까지 다양한 주제로 상담 받을 수 있습니다.
               </p>
             </motion.div>
           </div>
@@ -75,8 +65,8 @@ export default function LeverPage() {
                       <RainbowText>띵동이 뭐예요?</RainbowText>
                     </h2>
                     <p className="text-[#555555] mb-4">
-                      띵동은 청소년 성소수자를 위한 전문 상담 및 지원 단체입니다. 2015년부터 청소년들의 고민을 함께
-                      나누고, 안전한 공간을 제공해왔어요.
+                      띵동은 청소년 성소수자를 위한 상담 및 지원 단체로, 청소년 성소수자들이 성적 지향 및 성별정체성에 대한 자아존중감을 바탕으로 주체적인 삶을 살 수 있도록 함께합니다.
+                      2015년부터 청소년들의 고민을 함께 나누고, 안전한 공간을 제공해왔어요.
                     </p>
                     <div className="flex flex-wrap gap-4 text-sm">
                       <div className="flex items-center text-[#01CDFE]">
@@ -85,7 +75,7 @@ export default function LeverPage() {
                       </div>
                       <div className="flex items-center text-[#FF71CE]">
                         <Heart className="h-4 w-4 mr-2" />
-                        <span>전문 상담사</span>
+                        <span>의료, 법률, 심리상담 및 지원</span>
                       </div>
                       <div className="flex items-center text-[#FFF152]">
                         <Clock className="h-4 w-4 mr-2" />
@@ -95,7 +85,7 @@ export default function LeverPage() {
                   </div>
                   <div className="relative h-48 w-48 flex-shrink-0">
                     <Image
-                      src="/korean-diverse-youth.png"
+                      src="/ddingdong.png"
                       alt="띵동 소개"
                       fill
                       className="object-cover rounded-[15px]"
@@ -124,22 +114,22 @@ export default function LeverPage() {
                     <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-[#FEE500] flex items-center justify-center">
                       <MessageSquare className="h-8 w-8 text-[#3C1E1E]" />
                     </div>
-                    <CardTitle className="text-xl">카카오톡 상담</CardTitle>
+                    <CardTitle className="text-xl">카카오톡 상담 신청</CardTitle>
                     <CardDescription>편안하게 채팅으로 대화해요</CardDescription>
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-[#555555] mb-4">
-                      • 실시간 채팅 상담
-                      <br />• 익명 가능
-                      <br />• 평일 10:00-18:00
+                      • 메세지로 상담 신청
+                      <br />• 채널에서 띵동 소식 확인하기
                     </p>
+                    <CardDescription>카카오톡 사용이 어렵다면? 상담전화: 02-924-1227</CardDescription>
                   </CardContent>
                   <CardFooter>
                     <Button
                       className="w-full rounded-[15px] bg-[#FEE500] hover:bg-[#FEE500]/90 text-[#3C1E1E] font-medium"
                       onClick={handleKakaoTalk}
                     >
-                      카카오톡으로 상담하기
+                      카카오톡 상담 신청하기
                     </Button>
                   </CardFooter>
                 </Card>
@@ -161,8 +151,8 @@ export default function LeverPage() {
                   </CardHeader>
                   <CardContent className="text-center">
                     <p className="text-[#555555] mb-4">
-                      • 상담 신청 폼<br />• 다양한 자료실
-                      <br />• 프로그램 안내
+                      • 내가 받을 수 있는 지원은? <br />• 다양한 프로그램 확인하기
+                      <br />• 띵동의 활동 확인하기
                     </p>
                   </CardContent>
                   <CardFooter>
@@ -176,8 +166,17 @@ export default function LeverPage() {
                   </CardFooter>
                 </Card>
               </motion.div>
+            </div>
 
-              {/* 전화 상담 */}
+            {/* 상담 방식 안내 */}
+            <div className="text-center mb-8">
+              <h3 className="text-xl font-semibold text-[#333333] mb-6">
+                카카오톡 상담 신청 후 다음 방식으로 상담이 이루어져요.
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+              {/* 방문상담 */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -186,31 +185,15 @@ export default function LeverPage() {
                 <Card className="rounded-[20px] shadow-lg border-0 hover:shadow-xl transition-all duration-300 h-full">
                   <CardHeader className="text-center pb-4">
                     <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-[#FF71CE] flex items-center justify-center">
-                      <Phone className="h-8 w-8 text-white" />
+                      <MapPin className="h-8 w-8 text-white" />
                     </div>
-                    <CardTitle className="text-xl">전화 상담</CardTitle>
-                    <CardDescription>목소리로 직접 대화해요</CardDescription>
+                    <CardTitle className="text-xl">방문상담</CardTitle>
+                    <CardDescription>띵동 공간을 방문하여 상담합니다.</CardDescription>
                   </CardHeader>
-                  <CardContent className="text-center">
-                    <p className="text-[#555555] mb-4">
-                      • 1:1 전화 상담
-                      <br />• 즉시 연결 가능
-                      <br />• 평일 10:00-18:00
-                    </p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button
-                      className="w-full rounded-[15px] bg-[#FF71CE] hover:bg-[#FF71CE]/90 text-white"
-                      onClick={handlePhoneCall}
-                    >
-                      <Phone className="mr-2 h-4 w-4" />
-                      전화로 상담하기
-                    </Button>
-                  </CardFooter>
                 </Card>
               </motion.div>
 
-              {/* 이메일 상담 */}
+              {/* 전화상담 & 화상전화상담 */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -219,27 +202,11 @@ export default function LeverPage() {
                 <Card className="rounded-[20px] shadow-lg border-0 hover:shadow-xl transition-all duration-300 h-full">
                   <CardHeader className="text-center pb-4">
                     <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-[#FFF152] flex items-center justify-center">
-                      <Mail className="h-8 w-8 text-[#333333]" />
+                      <Phone className="h-8 w-8 text-[#333333]" />
                     </div>
-                    <CardTitle className="text-xl">이메일 상담</CardTitle>
-                    <CardDescription>신중하게 글로 소통해요</CardDescription>
+                    <CardTitle className="text-xl">전화상담 & 화상전화상담</CardTitle>
+                    <CardDescription>방문이 어렵다면 편안하게 전화나 화상전화 상담이 가능합니다.</CardDescription>
                   </CardHeader>
-                  <CardContent className="text-center">
-                    <p className="text-[#555555] mb-4">
-                      • 이메일 상담
-                      <br />• 깊이 있는 대화
-                      <br />• 24시간 접수
-                    </p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button
-                      className="w-full rounded-[15px] bg-[#FFF152] hover:bg-[#FFF152]/90 text-[#333333]"
-                      onClick={handleEmailContact}
-                    >
-                      <Mail className="mr-2 h-4 w-4" />
-                      이메일로 상담하기
-                    </Button>
-                  </CardFooter>
                 </Card>
               </motion.div>
             </div>

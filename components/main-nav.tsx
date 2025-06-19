@@ -51,38 +51,40 @@ export function MainNav() {
               용어사전
             </Link>
             <Link href="/identity-quiz" className="text-[#555555] hover:text-[#00F5A0] transition-colors font-medium">
-              정체성 퀴즈
+              정체성 테스트
             </Link>
             <Link href="/board" className="text-[#555555] hover:text-[#7FD8FF] transition-colors font-medium">
               게시판
             </Link>
-            <Button
-              className="rounded-[10px] bg-[#39393D] hover:bg-[#39393D]/90 text-white shadow-sm transition-all duration-300"
-              asChild
-            >
-              <Link href="/lever">🎯 레버당기기</Link>
-            </Button>
-            {isLoggedIn ? (
+            <div className="flex items-center space-x-5">
               <Button
-                className="rounded-[10px] bg-[#A091E6] hover:bg-[#8A7DD1] text-white shadow-sm transition-all duration-300"
+                className="rounded-[10px] bg-[#39393D] hover:bg-[#39393D]/90 text-white shadow-sm transition-all duration-300"
                 asChild
               >
-                <Link href="/profile">
-                  <User className="h-4 w-4 mr-2" />
-                  프로필
-                </Link>
+                <Link href="/lever">🎯 레버당기기</Link>
               </Button>
-            ) : (
-              <Button
-                className="rounded-[10px] bg-[#A091E6] hover:bg-[#8A7DD1] text-white shadow-sm transition-all duration-300"
-                asChild
-              >
-                <Link href="/login">
-                  <User className="h-4 w-4 mr-2" />
-                  로그인
-                </Link>
-              </Button>
-            )}
+              {isLoggedIn ? (
+                <Button
+                  className="rounded-[10px] bg-[#A091E6] hover:bg-[#8A7DD1] text-white shadow-sm transition-all duration-300"
+                  asChild
+                >
+                  <Link href="/profile">
+                    <User className="h-4 w-4 mr-2" />
+                    프로필
+                  </Link>
+                </Button>
+              ) : (
+                <Button
+                  className="rounded-[10px] bg-[#A091E6] hover:bg-[#8A7DD1] text-white shadow-sm transition-all duration-300"
+                  asChild
+                >
+                  <Link href="/login">
+                    <User className="h-4 w-4 mr-2" />
+                    로그인
+                  </Link>
+                </Button>
+              )}
+            </div>
           </nav>
 
           <div className="md:hidden">
@@ -111,7 +113,7 @@ export function MainNav() {
                 용어사전
               </Link>
               <Link href="/identity-quiz" className="block py-2 text-[#555555] hover:text-[#00F5A0] font-medium">
-                정체성 퀴즈
+                정체성 테스트
               </Link>
               <Link href="/board" className="block py-2 text-[#555555] hover:text-[#7FD8FF] font-medium">
                 게시판

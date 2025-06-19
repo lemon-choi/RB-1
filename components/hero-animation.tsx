@@ -61,7 +61,7 @@ export function HeroAnimation() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.5 }}
-          className="relative h-64 w-64 z-10"
+          className="relative h-16 w-16 z-10"
         >
           <Image
             src={images[currentImage] || "/placeholder.svg"}

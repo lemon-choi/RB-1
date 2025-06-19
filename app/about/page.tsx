@@ -28,7 +28,7 @@ export default function AboutPage() {
               <RainbowText>Rainbow Buddy 소개</RainbowText>
             </h1>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              청소년 성소수자를 위한 안전하고 친근한 디지털 놀이터, Rainbow Buddy를 소개합니다.
+              내가 혹시 성소수자인지 고민하고 있나요? 안전하고 정확한 정보로 청소년 여러분의 정체성 탐색을 도와드립니다. Rainbow Buddy에서 다양한 성 정체성과 지향성을 탐색하고, 자신만의 이야기를 만들어가 보세요!
             </p>
           </div>
 
@@ -47,7 +47,7 @@ export default function AboutPage() {
                 <RainbowText>우리의 미션</RainbowText>
               </h2>
               <p className="text-gray-600 mb-6">
-                Rainbow Buddy는 청소년 성소수자들이 자신의 정체성을 안전하게 탐색하고, 필요한 정보와 지원을 받을 수 있는
+                Rainbow Buddy는 성 정체성을 고민하는 청소년들이 자신의 정체성을 안전하게 탐색하고, 필요한 정보와 지원을 받을 수 있는
                 디지털 안전 공간을 제공합니다. 우리는 모든 청소년이 자신을 있는 그대로 사랑하고 존중받을 수 있는 세상을
                 만들기 위해 노력합니다.
               </p>
@@ -137,9 +137,9 @@ export default function AboutPage() {
                     />
                   </svg>
                 </div>
-                <h3 className="font-semibold mb-2">미니게임</h3>
+                <h3 className="font-semibold mb-2">정체성 테스트</h3>
                 <p className="text-gray-600 text-sm">
-                  재미있는 게임을 통해 다양성과 포용에 대해 배우고 공감 능력을 키워요.
+                  나는 성소수자일까요? 어떤 정체성을 가지고 있을까요? 정체성 테스트를 통해 자신에 대해 탐색하는 시간을 가져보아요.
                 </p>
               </div>
               <div className="text-center">
