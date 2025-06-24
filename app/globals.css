@@ -145,3 +145,47 @@ body {
   border-radius: 10px;
   overflow: hidden;
 }
+
+/* 모바일 앱 스타일 최적화 */
+@media (max-width: 768px) {
+  /* 터치 영역 최소 44px */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* 모바일에서 부드러운 스크롤 */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* 모바일에서 확대/축소 비활성화 */
+  input, textarea, select {
+    font-size: 16px; /* iOS Safari에서 자동 확대 방지 */
+  }
+  
+  /* 모바일 세이프 에어리어 지원 */
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* PWA 전체화면 모드일 때 */
+@media (display-mode: standalone) {
+  body {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* 다크모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .bg-white {
+    background-color: #1a1a1a;
+  }
+  
+  .text-gray-600 {
+    color: #a3a3a3;
+  }
+}
